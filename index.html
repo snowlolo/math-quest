@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Quest</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #1a1a6e, #3b0f8c, #6a0dad);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: white;
+    }
+    .card {
+      background: rgba(255,255,255,0.12);
+      border: 2px solid rgba(255,255,255,0.25);
+      border-radius: 28px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 460px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .stars { font-size: 2.5rem; margin-bottom: 10px; }
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #ffe566;
+      text-shadow: 3px 3px 0 #b8860b;
+      margin-bottom: 8px;
+    }
+    .subtitle { font-size: 1rem; color: rgba(255,255,255,0.7); margin-bottom: 36px; }
+    label { display: block; font-size: 1rem; font-weight: 600; margin-bottom: 10px; color: rgba(255,255,255,0.9); }
+    input[type="text"] {
+      width: 100%;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 14px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 14px 20px;
+      text-align: center;
+      outline: none;
+      margin-bottom: 20px;
+    }
+    input[type="text"]::placeholder { color: rgba(255,255,255,0.4); }
+    input[type="text"]:focus { border-color: #ffe566; }
+    .btn-play {
+      width: 100%;
+      background: #ffe566;
+      border: none;
+      border-radius: 14px;
+      color: #3b0f8c;
+      font-size: 1.3rem;
+      font-weight: 900;
+      padding: 16px;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+      margin-bottom: 14px;
+    }
+    .btn-play:hover { transform: scale(1.03); background: #ffd700; }
+    .btn-board {
+      width: 100%;
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 14px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 13px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-board:hover { background: rgba(255,255,255,0.12); border-color: white; }
+    .error { color: #ff7070; font-size: 0.9rem; margin-top: -12px; margin-bottom: 14px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="stars">&#11088;&#9733;&#11088;</div>
+    <h1>Math Quest</h1>
+    <p class="subtitle">Grade 3 &amp; 4 Math Adventure</p>
+    <label for="username">Enter your name to play</label>
+    <input id="username" type="text" placeholder="Your name..." maxlength="20" autocomplete="off" />
+    <p class="error" id="error">Please enter your name first!</p>
+    <button class="btn-play" onclick="startGame()">&#9654; Play!</button>
+    <button class="btn-board" onclick="goLeaderboard()">&#127942; Leaderboard</button>
+  </div>
+  <script>
+    document.getElementById("username").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") startGame();
+    });
+
+    function startGame() {
+      var name = document.getElementById("username").value.trim();
+      if (!name) {
+        document.getElementById("error").style.display = "block";
+        return;
+      }
+      localStorage.setItem("mathGameCurrentPlayer", name);
+      window.location.href = "game.html";
+    }
+
+    function goLeaderboard() {
+      window.location.href = "leaderboard.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Quest - Play</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #1a1a6e, #3b0f8c, #6a0dad);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: white;
+    }
+    #header {
+      width: 100%; max-width: 700px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    #left-header { display: flex; align-items: center; gap: 14px; }
+    #back-btn {
+      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 10px; color: white; font-size: 0.9rem; font-weight: 600;
+      padding: 6px 14px; cursor: pointer; transition: background 0.15s;
+      text-decoration: none;
+    }
+    #back-btn:hover { background: rgba(255,255,255,0.25); }
+    #game-title { font-size: 1.4rem; font-weight: 800; color: #ffe566; text-shadow: 2px 2px 0 #b8860b; }
+    #right-header { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    #player-name { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+    #score-display {
+      background: rgba(255,255,255,0.15); border: 2px solid #ffe566;
+      border-radius: 30px; padding: 6px 18px; font-size: 1rem; font-weight: 700; color: #ffe566;
+    }
+    #timer-bar-wrap {
+      width: 100%; max-width: 700px;
+      background: rgba(255,255,255,0.2); border-radius: 10px; height: 14px;
+      margin-bottom: 20px; overflow: hidden;
+    }
+    #timer-bar {
+      height: 100%; width: 100%;
+      background: linear-gradient(90deg, #00e676, #ffe566);
+      border-radius: 10px; transition: width 0.1s linear, background 0.5s;
+    }
+    #question-card {
+      background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.25);
+      border-radius: 24px; padding: 36px 32px 28px; width: 100%; max-width: 700px;
+      text-align: center; backdrop-filter: blur(8px); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    #topic-badge {
+      display: inline-block; background: #ffe566; color: #3b0f8c;
+      font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1px; border-radius: 20px; padding: 4px 14px; margin-bottom: 18px;
+    }
+    #question-text { font-size: 1.5rem; font-weight: 700; line-height: 1.4; margin-bottom: 28px; min-height: 60px; }
+    #choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .choice-btn {
+      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 16px; color: white; font-size: 1.1rem; font-weight: 700;
+      padding: 18px 12px; cursor: pointer;
+      transition: background 0.15s, transform 0.1s, border-color 0.15s;
+    }
+    .choice-btn:hover { background: rgba(255,255,255,0.28); transform: scale(1.03); }
+    .choice-btn.correct { background: #00c853; border-color: #00e676; }
+    .choice-btn.wrong   { background: #d32f2f; border-color: #ff5252; }
+    .choice-btn:disabled { cursor: default; transform: none; }
+    #typed-area { display: flex; gap: 12px; margin-bottom: 20px; justify-content: center; }
+    #typed-input {
+      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 14px; color: white; font-size: 1.2rem; font-weight: 700;
+      padding: 14px 20px; width: 200px; text-align: center; outline: none;
+    }
+    #typed-input::placeholder { color: rgba(255,255,255,0.5); }
+    #typed-input:focus { border-color: #ffe566; }
+    #submit-btn {
+      background: #ffe566; border: none; border-radius: 14px; color: #3b0f8c;
+      font-size: 1.1rem; font-weight: 800; padding: 14px 28px; cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+    }
+    #submit-btn:hover { transform: scale(1.05); background: #ffd700; }
+    #hint-btn {
+      background: transparent; border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 30px; color: rgba(255,255,255,0.8); font-size: 0.9rem;
+      font-weight: 600; padding: 8px 20px; cursor: pointer;
+      transition: background 0.15s, border-color 0.15s; margin-bottom: 16px;
+    }
+    #hint-btn:hover { background: rgba(255,255,255,0.12); border-color: white; }
+    #hint-text {
+      background: rgba(255,230,100,0.15); border: 1px solid #ffe566;
+      border-radius: 12px; color: #ffe566; font-size: 0.95rem;
+      padding: 12px 18px; margin-bottom: 16px; display: none; text-align: left;
+    }
+    #feedback {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.55); z-index: 10;
+    }
+    #feedback-box {
+      background: white; border-radius: 28px; padding: 48px 56px;
+      text-align: center; box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+      animation: popIn 0.2s ease;
+    }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    #feedback-icon   { font-size: 4rem; margin-bottom: 12px; }
+    #feedback-label  { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+    #feedback-points { font-size: 1.2rem; color: #555; margin-bottom: 6px; }
+    #feedback-total  { font-size: 1rem; color: #888; }
+    .feedback-correct #feedback-label { color: #00c853; }
+    .feedback-wrong   #feedback-label { color: #d32f2f; }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <div id="left-header">
+      <a id="back-btn" href="index.html">&#8592; Home</a>
+      <div id="game-title">&#11088; Math Quest</div>
+    </div>
+    <div id="right-header">
+      <div id="player-name"></div>
+      <div id="score-display">Score: <span id="score-number">0</span></div>
+    </div>
+  </div>
+
+  <div id="timer-bar-wrap"><div id="timer-bar"></div></div>
+
+  <div id="question-card">
+    <div id="topic-badge">Loading...</div>
+    <div id="question-text">Get ready!</div>
+    <div id="choices"></div>
+    <div id="typed-area" style="display:none">
+      <input id="typed-input" type="text" placeholder="Your answer..." autocomplete="off" />
+      <button id="submit-btn" onclick="handleTypedSubmit()">Go!</button>
+    </div>
+    <button id="hint-btn" onclick="handleHint()">&#128161; Use Hint (-300 pts)</button>
+    <div id="hint-text"></div>
+  </div>
+
+  <div id="feedback">
+    <div id="feedback-box">
+      <div id="feedback-icon"></div>
+      <div id="feedback-label"></div>
+      <div id="feedback-points"></div>
+      <div id="feedback-total"></div>
+    </div>
+  </div>
+
+  <script src="scoring.js"></script>
+  <script src="hints.js"></script>
+  <script src="questionGenerator.js"></script>
+  <script>
+    var MULTIPLE_CHOICE_TOPICS = ["fractions", "telling time", "place value", "equals sign"];
+    var currentQuestion = null;
+    var timerInterval = null;
+    var TIME_LIMIT = 30;
+    var timeLeft = TIME_LIMIT;
+    var answered = false;
+
+    function startGame() {
+      var player = getCurrentPlayer();
+      document.getElementById("player-name").textContent = "Playing as: " + player;
+      updateScoreDisplay();
+      loadNextQuestion();
+    }
+
+    function loadNextQuestion() {
+      answered = false;
+      currentQuestion = getQuestion();
+      resetHint();
+      document.getElementById("topic-badge").textContent = currentQuestion.topic.toUpperCase();
+      document.getElementById("question-text").textContent = currentQuestion.question;
+      document.getElementById("hint-text").style.display = "none";
+      document.getElementById("hint-text").textContent = "";
+      var isMultipleChoice = MULTIPLE_CHOICE_TOPICS.indexOf(currentQuestion.topic) !== -1;
+      if (isMultipleChoice) { showMultipleChoice(); } else { showTypedInput(); }
+      startCountdown();
+      startTimer();
+    }
+
+    function showMultipleChoice() {
+      document.getElementById("typed-area").style.display = "none";
+      var choicesDiv = document.getElementById("choices");
+      choicesDiv.style.display = "grid";
+      choicesDiv.innerHTML = "";
+      var options = generateChoices(currentQuestion.answer);
+      options.forEach(function(option) {
+        var btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.textContent = option;
+        btn.onclick = (function(b, o) { return function() { handleChoiceClick(b, o); }; })(btn, option);
+        choicesDiv.appendChild(btn);
+      });
+    }
+
+    function handleChoiceClick(btn, chosen) {
+      if (answered) return;
+      answered = true;
+      stopCountdown();
+      var result = submitAnswer(chosen, currentQuestion.answer);
+      highlightChoices();
+      showFeedback(result);
+    }
+
+    function highlightChoices() {
+      var buttons = document.querySelectorAll(".choice-btn");
+      buttons.forEach(function(b) {
+        b.disabled = true;
+        if (String(b.textContent).trim().toLowerCase() === String(currentQuestion.answer).trim().toLowerCase()) {
+          b.classList.add("correct");
+        } else {
+          b.classList.add("wrong");
+        }
+      });
+    }
+
+    function generateChoices(correct) {
+      var wrongs = [];
+      var correctStr = String(correct);
+      var numericAnswer = parseFloat(correct);
+      if (!isNaN(numericAnswer)) {
+        var offsets = [-2, -1, 1, 2, 3, -3, 5, -5];
+        shuffleArray(offsets);
+        for (var i = 0; i < offsets.length && wrongs.length < 3; i++) {
+          var wrong = numericAnswer + offsets[i];
+          if (wrong > 0 && String(wrong) !== correctStr && wrongs.indexOf(String(wrong)) === -1) {
+            wrongs.push(String(wrong));
+          }
+        }
+      } else {
+        wrongs = generateNonNumericWrongs(correct);
+      }
+      var fallbacks = ["12", "8", "24", "16", "6"];
+      for (var j = 0; wrongs.length < 3 && j < fallbacks.length; j++) {
+        if (fallbacks[j] !== correctStr && wrongs.indexOf(fallbacks[j]) === -1) { wrongs.push(fallbacks[j]); }
+      }
+      var options = wrongs.slice(0, 3).concat([correctStr]);
+      shuffleArray(options);
+      return options;
+    }
+
+    function generateNonNumericWrongs(correct) {
+      if (correct.indexOf("/") !== -1) {
+        var parts = correct.split("/");
+        var num = parseInt(parts[0]);
+        var den = parseInt(parts[1]);
+        return [(num+1)+"/"+den, num+"/"+(den+1), (num+1)+"/"+(den+1)];
+      }
+      if (correct === "yes") return ["no", "maybe", "sometimes"];
+      if (correct === "no")  return ["yes", "maybe", "sometimes"];
+      return ["10", "20", "30"];
+    }
+
+    function showTypedInput() {
+      document.getElementById("choices").style.display = "none";
+      document.getElementById("choices").innerHTML = "";
+      document.getElementById("typed-area").style.display = "flex";
+      var input = document.getElementById("typed-input");
+      input.value = "";
+      input.focus();
+    }
+
+    function handleTypedSubmit() {
+      if (answered) return;
+      var input = document.getElementById("typed-input");
+      var playerAnswer = input.value.trim();
+      if (!playerAnswer) return;
+      answered = true;
+      stopCountdown();
+      var result = submitAnswer(playerAnswer, currentQuestion.answer);
+      showFeedback(result);
+    }
+
+    document.getElementById("typed-input").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") handleTypedSubmit();
+    });
+
+    function handleHint() {
+      var result = useHint(currentQuestion.hint);
+      var hintDiv = document.getElementById("hint-text");
+      hintDiv.textContent = String.fromCodePoint(128161) + " " + result.hint;
+      hintDiv.style.display = "block";
+      if (!result.alreadyUsed) updateScoreDisplay();
+    }
+
+    function startCountdown() {
+      timeLeft = TIME_LIMIT;
+      updateTimerBar();
+      timerInterval = setInterval(function() {
+        timeLeft -= 0.1;
+        if (timeLeft <= 0) {
+          timeLeft = 0; updateTimerBar();
+          if (!answered) {
+            answered = true; stopCountdown();
+            showFeedback({ correct: false, pointsEarned: 0, timeTaken: TIME_LIMIT, totalScore: getTotalScore() });
+          }
+        } else { updateTimerBar(); }
+      }, 100);
+    }
+
+    function stopCountdown() { clearInterval(timerInterval); }
+
+    function updateTimerBar() {
+      var pct = (timeLeft / TIME_LIMIT) * 100;
+      var bar = document.getElementById("timer-bar");
+      bar.style.width = pct + "%";
+      if (pct > 50) { bar.style.background = "linear-gradient(90deg, #00e676, #ffe566)"; }
+      else if (pct > 20) { bar.style.background = "linear-gradient(90deg, #ffe566, #ff9800)"; }
+      else { bar.style.background = "linear-gradient(90deg, #ff5252, #d32f2f)"; }
+    }
+
+    function showFeedback(result) {
+      updateScoreDisplay();
+      var overlay = document.getElementById("feedback");
+      var box = document.getElementById("feedback-box");
+      document.getElementById("feedback-icon").textContent   = result.correct ? String.fromCodePoint(127881) : String.fromCodePoint(128556);
+      document.getElementById("feedback-label").textContent  = result.correct ? "Correct!" : "Not quite!";
+      document.getElementById("feedback-points").textContent = result.correct
+        ? "+" + result.pointsEarned + " points  (" + result.timeTaken + "s)"
+        : "The answer was: " + currentQuestion.answer;
+      document.getElementById("feedback-total").textContent  = "Total score: " + result.totalScore;
+      box.className = result.correct ? "feedback-correct" : "feedback-wrong";
+      overlay.style.display = "flex";
+      setTimeout(function() { overlay.style.display = "none"; loadNextQuestion(); }, 2000);
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById("score-number").textContent = getTotalScore();
+    }
+
+    function shuffleArray(arr) {
+      for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+      }
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
