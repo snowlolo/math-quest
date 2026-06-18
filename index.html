@@ -11,107 +11,124 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      min-height: 100vh;
+      background: var(--bg); min-height: 100vh;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 30px 20px; color: var(--text);
+      padding: 28px 20px; color: var(--text);
     }
-    .container { width: 100%; max-width: 500px; }
+    .container { width: 100%; max-width: 540px; }
 
     /* ── Wordmark ── */
     .wordmark {
       display: flex; align-items: center; justify-content: center; gap: 10px;
-      margin-bottom: 36px; font-size: 1.45rem; font-weight: 900;
+      margin-bottom: 28px; font-size: 1.35rem; font-weight: 900;
       letter-spacing: -0.5px; color: var(--text); line-height: 1;
     }
     .wordmark-mark {
-      width: 32px; height: 32px; background: var(--blue); border-radius: 9px;
+      width: 30px; height: 30px; background: var(--blue); border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
-      color: #fff; font-size: 1rem; flex-shrink: 0; letter-spacing: 0;
+      color: #fff; font-size: 0.9rem; flex-shrink: 0; letter-spacing: 0;
       box-shadow: 0 2px 10px rgba(0, 107, 182, 0.35);
     }
 
-    /* ── Name input ── */
-    .name-row { margin-bottom: 28px; }
-    label {
-      display: block; font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase; color: var(--text-quaternary); margin-bottom: 8px;
+    /* ── Player row ── */
+    .player-row { margin-bottom: 22px; }
+    .player-label {
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--text-quaternary); margin-bottom: 7px;
+      display: block;
     }
+    .player-input-wrap { position: relative; }
     input[type="text"] {
       width: 100%; background: var(--surface); border: 1px solid var(--border);
       border-radius: 8px; color: var(--text); font-family: inherit;
-      font-size: 1rem; font-weight: 600; padding: 13px 16px; outline: none;
+      font-size: 1rem; font-weight: 700; padding: 12px 16px; outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
     }
-    input[type="text"]::placeholder { color: var(--text-quaternary); }
-    input[type="text"]:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-muted);
-    }
-    .error { color: var(--text-tertiary); font-size: 0.75rem; margin-top: 8px; display: none; }
+    input[type="text"]::placeholder { color: var(--text-quaternary); font-weight: 500; }
+    input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-muted); }
+    .error { color: var(--text-tertiary); font-size: 0.75rem; margin-top: 6px; display: none; }
 
     /* ── Section label ── */
     .section-label {
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 2px;
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 2px;
       text-transform: uppercase; color: var(--text-quaternary); margin-bottom: 10px;
     }
 
-    /* ── Mode cards ── */
-    .modes { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    /* ── Mode grid ── */
+    .modes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    /* Tile base */
     .mode-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-      padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 18px 16px; cursor: pointer;
+      display: flex; flex-direction: column; gap: 10px;
+      min-height: 148px;
+      animation: cardEnter 0.35s ease both;
       transition: border-color 0.12s, background 0.12s, box-shadow 0.12s, transform 0.08s;
     }
     .mode-card:hover { border-color: var(--text-quaternary); background: var(--surface-raised); }
-    .mode-card:active { transform: scale(0.99); }
+    .mode-card:active { transform: scale(0.98); }
     .mode-card.active {
       border-color: var(--accent); background: var(--accent-muted);
       box-shadow: inset 3px 0 0 var(--accent);
     }
 
+    /* Hard Mode: full-width banner, horizontal layout */
+    .mode-card:nth-child(5) {
+      grid-column: span 2;
+      flex-direction: row;
+      align-items: center;
+      min-height: auto;
+      padding: 16px 18px;
+      gap: 16px;
+    }
+
+    /* Animation delays */
+    .mode-card:nth-child(1) { animation-delay: 0.04s; }
+    .mode-card:nth-child(2) { animation-delay: 0.08s; }
+    .mode-card:nth-child(3) { animation-delay: 0.13s; }
+    .mode-card:nth-child(4) { animation-delay: 0.18s; }
+    .mode-card:nth-child(5) { animation-delay: 0.23s; }
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) { .mode-card { animation: none; } }
+
     /* ── Mode icon ── */
     .mode-icon {
-      width: 38px; height: 38px; background: var(--surface-raised); border: 1px solid var(--border);
-      border-radius: 9px; display: flex; align-items: center; justify-content: center;
-      color: var(--text-quaternary); flex-shrink: 0;
+      width: 42px; height: 42px; flex-shrink: 0;
+      background: var(--surface-raised); border: 1px solid var(--border);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      color: var(--text-quaternary);
       transition: background 0.12s, border-color 0.12s, color 0.12s;
     }
     .mode-card:hover .mode-icon { color: var(--text-tertiary); border-color: var(--text-quaternary); }
     .mode-card.active .mode-icon { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
 
     /* ── Mode info ── */
-    .mode-info { flex: 1; min-width: 0; }
-    .mode-name { font-size: 0.95rem; font-weight: 800; color: var(--text-dim); margin-bottom: 3px; letter-spacing: -0.2px; }
+    .mode-info { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .mode-name {
+      font-size: 1rem; font-weight: 900; color: var(--text-dim);
+      letter-spacing: -0.3px; line-height: 1.2; margin-bottom: 5px;
+    }
     .mode-card:hover .mode-name { color: var(--text); }
     .mode-card.active .mode-name { color: var(--accent); }
-    .mode-desc { font-size: 0.78rem; color: var(--text-tertiary); font-weight: 500; line-height: 1.4; }
-    .mode-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+    .mode-desc { font-size: 0.76rem; color: var(--text-tertiary); font-weight: 500; line-height: 1.45; flex: 1; }
+    .mode-tags { display: flex; gap: 4px; flex-wrap: wrap; padding-top: 10px; margin-top: auto; }
     .tag {
-      font-size: 0.6rem; font-weight: 700; letter-spacing: 1px;
-      text-transform: uppercase; color: var(--text-quaternary); border: 1px solid var(--border);
-      border-radius: 4px; padding: 2px 6px;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text-quaternary);
+      border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px;
     }
 
-    /* ── Arrow chevron ── */
-    .arrow { color: var(--text-quaternary); flex-shrink: 0; display: flex; transition: color 0.12s; }
-    .mode-card:hover .arrow { color: var(--text-tertiary); }
-    .mode-card.active .arrow { color: var(--accent); }
-
-    /* ── Card entrance animation ── */
-    .mode-card { animation: cardEnter 0.35s ease both; }
-    .mode-card:nth-child(1) { animation-delay: 0.04s; }
-    .mode-card:nth-child(2) { animation-delay: 0.09s; }
-    .mode-card:nth-child(3) { animation-delay: 0.14s; }
-    .mode-card:nth-child(4) { animation-delay: 0.19s; }
-    .mode-card:nth-child(5) { animation-delay: 0.24s; }
-    @keyframes cardEnter {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .mode-card { animation: none; }
-    }
+    /* Hard Mode: tags inline beside name */
+    .mode-card:nth-child(5) .mode-tags { padding-top: 0; margin-top: 6px; }
 
     /* ── Count picker ── */
     #count-panel { display: none; margin-bottom: 12px; animation: fadeSlide 0.18s ease; }
@@ -123,7 +140,7 @@
     .count-grid.three-col { grid-template-columns: repeat(3, 1fr); }
     .count-btn {
       background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-      color: var(--text-dim); font-family: inherit; font-size: 1.05rem; font-weight: 800;
+      color: var(--text-dim); font-family: inherit; font-size: 1.1rem; font-weight: 800;
       padding: 16px 8px; cursor: pointer; text-align: center; letter-spacing: -0.3px;
       transition: border-color 0.12s, background 0.12s, transform 0.08s, color 0.12s;
     }
@@ -131,57 +148,57 @@
     .count-btn:active { transform: scale(0.97); }
 
     /* ── Bottom nav ── */
-    .btn-leaderboard {
-      width: 100%; background: transparent; border: 1px solid var(--border);
+    .nav-row { display: flex; gap: 6px; }
+    .btn-nav {
+      flex: 1; background: transparent; border: 1px solid var(--border);
       border-radius: 8px; color: var(--text-quaternary); font-family: inherit;
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; padding: 13px; cursor: pointer;
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; padding: 12px 8px; cursor: pointer;
       transition: border-color 0.12s, color 0.12s, background 0.12s;
     }
-    .btn-leaderboard:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-muted); }
+    .btn-nav:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-muted); }
   </style>
 </head>
 <body>
   <div class="container">
+
     <div class="wordmark">
       <div class="wordmark-mark">✦</div>
       HW Helper
     </div>
 
-    <div class="name-row">
-      <label for="username">Your name</label>
+    <div class="player-row">
+      <label class="player-label" for="username">Who's playing?</label>
       <input id="username" type="text" placeholder="Enter your name..." maxlength="20" autocomplete="off" />
       <p class="error" id="error">Enter your name first.</p>
     </div>
 
-    <p class="section-label">Grade 3-4 &nbsp;·&nbsp; Select a mode</p>
+    <p class="section-label">Pick a mode</p>
+
     <div class="modes" id="modes">
 
+      <!-- Classic -->
       <div class="mode-card" onclick="selectMode('classic', this)">
         <div class="mode-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
             <path d="M9.5 1.5L3.5 9H7.5L6 14.5L12.5 7H8.5L9.5 1.5Z"/>
           </svg>
         </div>
         <div class="mode-info">
           <div class="mode-name">Classic</div>
-          <div class="mode-desc">Speed-based scoring with a 30-second timer per question.</div>
+          <div class="mode-desc">Race the clock. 30 seconds per question, bonus points for speed.</div>
           <div class="mode-tags">
             <span class="tag">30s timer</span>
             <span class="tag">speed scoring</span>
             <span class="tag">hints</span>
           </div>
         </div>
-        <div class="arrow" aria-hidden="true">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 3L9 7L5 11"/>
-          </svg>
-        </div>
       </div>
 
+      <!-- Accuracy -->
       <div class="mode-card" onclick="selectMode('accuracy', this)">
         <div class="mode-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="8" cy="8" r="6.5"/>
             <circle cx="8" cy="8" r="3.5"/>
             <circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/>
@@ -189,46 +206,37 @@
         </div>
         <div class="mode-info">
           <div class="mode-name">Accuracy</div>
-          <div class="mode-desc">No time pressure. Build your streak — each correct answer multiplies your bonus.</div>
+          <div class="mode-desc">No timer. Build a streak and multiply your score with every correct answer.</div>
           <div class="mode-tags">
             <span class="tag">no timer</span>
             <span class="tag">streak bonus</span>
             <span class="tag">hints</span>
           </div>
         </div>
-        <div class="arrow" aria-hidden="true">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 3L9 7L5 11"/>
-          </svg>
-        </div>
       </div>
 
+      <!-- Test -->
       <div class="mode-card" onclick="selectMode('test', this)">
         <div class="mode-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
             <rect x="2.5" y="2" width="11" height="12" rx="2"/>
             <path d="M5.5 8.5L7.5 10.5L11 6.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div class="mode-info">
           <div class="mode-name">Test</div>
-          <div class="mode-desc">Fixed questions, no hints, graded A-F at the end.</div>
+          <div class="mode-desc">Fixed questions, no hints, graded A-F at the end. Exam conditions.</div>
           <div class="mode-tags">
             <span class="tag">graded</span>
             <span class="tag">no hints</span>
-            <span class="tag">typed only</span>
           </div>
-        </div>
-        <div class="arrow" aria-hidden="true">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 3L9 7L5 11"/>
-          </svg>
         </div>
       </div>
 
+      <!-- Practice -->
       <div class="mode-card" onclick="selectMode('practice', this)">
         <div class="mode-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M8 13.5V4" stroke-linecap="round"/>
             <path d="M8 4L3 3V12.5L8 13.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M8 4L13 3V12.5L8 13.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -236,39 +244,30 @@
         </div>
         <div class="mode-info">
           <div class="mode-name">Practice</div>
-          <div class="mode-desc">No timer, no score. Free hints and a full explanation after every answer.</div>
+          <div class="mode-desc">No pressure. Free hints and a full explanation after every answer.</div>
           <div class="mode-tags">
             <span class="tag">no timer</span>
             <span class="tag">free hints</span>
             <span class="tag">explanations</span>
           </div>
         </div>
-        <div class="arrow" aria-hidden="true">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 3L9 7L5 11"/>
-          </svg>
-        </div>
       </div>
 
+      <!-- Hard Mode: spans full width -->
       <div class="mode-card" onclick="selectMode('hard', this)">
         <div class="mode-icon" aria-hidden="true">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M8 14C5.5 14 4 11.5 4 9C4 6.5 7 4 7 2C7.5 3.5 8.5 5 8.5 6.5C9 5 10 3.5 10 2.5C12 4.5 12 7 12 9C12 11.5 10.5 14 8 14Z" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div class="mode-info">
           <div class="mode-name">Hard Mode</div>
-          <div class="mode-desc">Grade 4-5 questions. 15 seconds. No hints. All answers typed.</div>
+          <div class="mode-desc">Grade 4-5 questions. 15 seconds per answer. No hints. All typed. Not for the faint-hearted.</div>
           <div class="mode-tags">
             <span class="tag">15s timer</span>
             <span class="tag">no hints</span>
             <span class="tag">typed only</span>
           </div>
-        </div>
-        <div class="arrow" aria-hidden="true">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 3L9 7L5 11"/>
-          </svg>
         </div>
       </div>
 
@@ -284,15 +283,20 @@
       </div>
     </div>
 
-    <div style="display:flex; gap:6px; margin-top:0">
-      <button class="btn-leaderboard" style="flex:1" onclick="location.href='home.html'">Home</button>
-      <button class="btn-leaderboard" style="flex:1" onclick="location.href='lessons.html'">Lessons</button>
-      <button class="btn-leaderboard" style="flex:1" onclick="location.href='leaderboard.html'">Leaderboard</button>
+    <div class="nav-row">
+      <button class="btn-nav" onclick="location.href='home.html'">Home</button>
+      <button class="btn-nav" onclick="location.href='lessons.html'">Lessons</button>
+      <button class="btn-nav" onclick="location.href='leaderboard.html'">Leaderboard</button>
     </div>
+
   </div>
 
   <script>
     var selectedMode = null;
+
+    // Pre-fill name from last session
+    var saved = localStorage.getItem("mathGameCurrentPlayer");
+    if (saved) document.getElementById("username").value = saved;
 
     function selectMode(mode, card) {
       var name = document.getElementById("username").value.trim();
