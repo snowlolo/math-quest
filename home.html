@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HW Helper - Math Practice for Grade 3-4</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="theme.css" />
+  <script src="theme.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    nav {
+      max-width: 1080px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 40px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1.1rem; font-weight: 900; letter-spacing: -0.4px;
+      color: var(--text); text-decoration: none;
+    }
+    .nav-logo-mark {
+      width: 28px; height: 28px; background: var(--blue); border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 0.85rem; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 107, 182, 0.3);
+    }
+    .nav-links { display: flex; align-items: center; gap: 6px; }
+    .nav-link {
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 7px; color: var(--text-tertiary); font-family: inherit;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 8px 14px; cursor: pointer; text-decoration: none;
+      transition: border-color 0.12s, color 0.12s, background 0.12s;
+    }
+    .nav-link:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-muted); }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: 1080px; margin: 0 auto;
+      padding: 56px 40px 80px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: center; gap: 64px;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue-muted); border: 1px solid rgba(0, 107, 182, 0.25);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--blue); margin-bottom: 22px;
+    }
+    .eyebrow-dot { width: 5px; height: 5px; background: var(--blue); border-radius: 50%; flex-shrink: 0; }
+    .hero-headline {
+      font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; line-height: 1.05;
+      color: var(--text); margin-bottom: 18px;
+    }
+    .hero-headline .hl { color: var(--accent); }
+    .hero-sub {
+      font-size: 1rem; color: var(--text-secondary); line-height: 1.6;
+      margin-bottom: 36px; font-weight: 500; max-width: 420px;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); border: none; border-radius: 10px;
+      color: var(--accent-text); font-family: inherit; font-size: 0.85rem;
+      font-weight: 800; letter-spacing: 0.3px;
+      padding: 15px 26px; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: background 0.12s, transform 0.08s;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-ghost {
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text-secondary); font-family: inherit;
+      font-size: 0.85rem; font-weight: 700; padding: 15px 22px;
+      cursor: pointer; text-decoration: none;
+      transition: border-color 0.12s, color 0.12s, background 0.12s;
+    }
+    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-muted); }
+
+    /* ── Hero visual ── */
+    .hero-visual {
+      display: flex; flex-direction: column; align-items: center; gap: 28px;
+      animation: fadeUp 0.5s 0.12s ease both;
+    }
+    .hero-equation {
+      text-align: center; user-select: none; line-height: 1;
+      padding: 40px 36px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; width: 100%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+    }
+    .eq-top {
+      font-size: 4.8rem; font-weight: 900; letter-spacing: -3px;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .eq-bottom {
+      font-size: 4.8rem; font-weight: 900; letter-spacing: -3px;
+    }
+    .eq-equals { color: var(--text-quaternary); }
+    .eq-q { color: var(--accent); }
+
+    .hero-stats {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; width: 100%; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .hero-stat {
+      flex: 1; padding: 16px 12px; text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat-num {
+      font-size: 1.5rem; font-weight: 900; letter-spacing: -1px;
+      color: var(--text); line-height: 1; margin-bottom: 4px;
+    }
+    .hero-stat-label {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text-quaternary);
+    }
+
+    /* ── Section ── */
+    .section { max-width: 1080px; margin: 0 auto; padding: 0 40px 80px; }
+    .section-header { margin-bottom: 28px; }
+    .section-title { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.8px; margin-bottom: 6px; }
+    .section-sub { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+
+    /* ── Mode grid ── */
+    .modes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .mode-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px 20px;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    }
+    .mode-card:hover { border-color: var(--text-quaternary); transform: translateY(-2px); }
+    .mode-icon {
+      width: 40px; height: 40px; background: var(--surface-raised); border: 1px solid var(--border);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      color: var(--text-tertiary); margin-bottom: 16px;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .mode-card:hover .mode-icon { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
+    .mode-name { font-size: 0.95rem; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.2px; }
+    .mode-desc { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; font-weight: 500; margin-bottom: 14px; }
+    .mode-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag {
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--text-quaternary); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2px 6px;
+    }
+
+    /* ── Bottom CTA ── */
+    .cta-section { max-width: 1080px; margin: 0 auto; padding: 0 40px 80px; }
+    .cta-box {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+      padding: 48px 44px; display: flex; align-items: center;
+      justify-content: space-between; gap: 40px;
+    }
+    .cta-headline { font-size: 1.7rem; font-weight: 900; letter-spacing: -0.6px; margin-bottom: 8px; }
+    .cta-sub { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.55; max-width: 400px; }
+
+    /* ── Footer ── */
+    .footer-wrap { border-top: 1px solid var(--border); }
+    footer {
+      max-width: 1080px; margin: 0 auto;
+      padding: 22px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem; font-weight: 800; color: var(--text-tertiary); letter-spacing: -0.2px;
+    }
+    .footer-logo-mark {
+      width: 20px; height: 20px; background: var(--blue); border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 0.6rem;
+    }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-link {
+      font-size: 0.72rem; font-weight: 600; color: var(--text-quaternary);
+      text-decoration: none; letter-spacing: 0.5px; transition: color 0.12s;
+    }
+    .footer-link:hover { color: var(--text-secondary); }
+
+    /* ── Entrance animations ── */
+    .hero-text { animation: fadeUp 0.5s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modes-grid .mode-card { animation: fadeUp 0.4s ease both; }
+    .modes-grid .mode-card:nth-child(1) { animation-delay: 0.06s; }
+    .modes-grid .mode-card:nth-child(2) { animation-delay: 0.11s; }
+    .modes-grid .mode-card:nth-child(3) { animation-delay: 0.16s; }
+    .modes-grid .mode-card:nth-child(4) { animation-delay: 0.21s; }
+    .modes-grid .mode-card:nth-child(5) { animation-delay: 0.26s; }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-text, .hero-visual, .mode-card { animation: none; }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      nav { padding: 18px 24px; }
+      .hero { grid-template-columns: 1fr; padding: 36px 24px 60px; gap: 44px; }
+      .hero-visual { order: -1; }
+      .hero-headline { font-size: 2.6rem; }
+      .eq-top, .eq-bottom { font-size: 3.5rem; }
+      .section { padding: 0 24px 60px; }
+      .modes-grid { grid-template-columns: 1fr 1fr; }
+      .cta-section { padding: 0 24px 60px; }
+      .cta-box { flex-direction: column; padding: 32px 28px; gap: 22px; }
+      .cta-sub { max-width: none; }
+      footer { padding: 20px 24px; }
+    }
+    @media (max-width: 520px) {
+      .hero-headline { font-size: 2.1rem; letter-spacing: -1.5px; }
+      .eq-top, .eq-bottom { font-size: 2.8rem; letter-spacing: -2px; }
+      .hero-actions { flex-direction: column; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; text-align: center; }
+      .modes-grid { grid-template-columns: 1fr; }
+      .footer-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="home.html">
+      <div class="nav-logo-mark">✦</div>
+      HW Helper
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="lessons.html">Lessons</a>
+      <a class="nav-link" href="leaderboard.html">Leaderboard</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-dot"></div>
+        Grade 3-4 math practice
+      </div>
+      <h1 class="hero-headline">Math homework,<br><span class="hl">conquered.</span></h1>
+      <p class="hero-sub">
+        Five modes, eight topics, unlimited questions.
+        Build speed, chain a streak, or prep for a real test.
+      </p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="index.html">
+          Start Playing
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5"/></svg>
+        </a>
+        <a class="btn-ghost" href="lessons.html">Study first</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-equation">
+        <div class="eq-top">7 &times; 8</div>
+        <div class="eq-bottom"><span class="eq-equals">= </span><span class="eq-q">?</span></div>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">5</div>
+          <div class="hero-stat-label">Modes</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">8</div>
+          <div class="hero-stat-label">Topics</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">&#x221e;</div>
+          <div class="hero-stat-label">Questions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">Five ways to practice</h2>
+      <p class="section-sub">Pick the mode that fits how you want to learn today.</p>
+    </div>
+
+    <div class="modes-grid">
+
+      <div class="mode-card">
+        <div class="mode-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M9.5 1.5L3.5 9H7.5L6 14.5L12.5 7H8.5L9.5 1.5Z"/></svg>
+        </div>
+        <div class="mode-name">Classic</div>
+        <div class="mode-desc">Speed-based scoring. 30 seconds per question. Race the clock for max points.</div>
+        <div class="mode-tags">
+          <span class="tag">30s timer</span><span class="tag">speed scoring</span><span class="tag">hints</span>
+        </div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="8" r="3.5"/><circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="mode-name">Accuracy</div>
+        <div class="mode-desc">No time pressure. Build a streak and multiply your bonus with every correct answer.</div>
+        <div class="mode-tags">
+          <span class="tag">no timer</span><span class="tag">streak bonus</span><span class="tag">hints</span>
+        </div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="2.5" y="2" width="11" height="12" rx="2"/>
+            <path d="M5.5 8.5L7.5 10.5L11 6.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="mode-name">Test</div>
+        <div class="mode-desc">Fixed questions, no hints, graded A-F when you finish. Real exam conditions.</div>
+        <div class="mode-tags">
+          <span class="tag">graded</span><span class="tag">no hints</span><span class="tag">typed only</span>
+        </div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 13.5V4" stroke-linecap="round"/>
+            <path d="M8 4L3 3V12.5L8 13.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 4L13 3V12.5L8 13.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="mode-name">Practice</div>
+        <div class="mode-desc">No timer, no score. Free hints and a full explanation after every question.</div>
+        <div class="mode-tags">
+          <span class="tag">no timer</span><span class="tag">free hints</span><span class="tag">explanations</span>
+        </div>
+      </div>
+
+      <div class="mode-card">
+        <div class="mode-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M8 14C5.5 14 4 11.5 4 9C4 6.5 7 4 7 2C7.5 3.5 8.5 5 8.5 6.5C9 5 10 3.5 10 2.5C12 4.5 12 7 12 9C12 11.5 10.5 14 8 14Z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="mode-name">Hard Mode</div>
+        <div class="mode-desc">Grade 4-5 questions. 15 seconds. No hints. All typed. Not for the faint-hearted.</div>
+        <div class="mode-tags">
+          <span class="tag">15s timer</span><span class="tag">no hints</span><span class="tag">typed only</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-box">
+      <div>
+        <div class="cta-headline">Ready to practice?</div>
+        <p class="cta-sub">Enter your name, pick a mode, and choose how many questions. Your best score goes on the leaderboard.</p>
+      </div>
+      <div style="flex-shrink:0">
+        <a class="btn-primary" href="index.html">
+          Start Playing
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h8M7.5 3.5L11 7l-3.5 3.5"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-wrap">
+    <footer>
+      <div class="footer-logo">
+        <div class="footer-logo-mark">✦</div>
+        HW Helper
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="lessons.html">Lessons</a>
+        <a class="footer-link" href="leaderboard.html">Leaderboard</a>
+        <a class="footer-link" href="index.html">Play Now</a>
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>

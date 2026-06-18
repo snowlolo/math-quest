@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HW Helper - Lessons</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="theme.css" />
+  <script src="theme.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; padding: 24px 20px 48px;
+    }
+    #header {
+      max-width: 640px; margin: 0 auto 28px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #back-btn {
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-secondary); font-family: inherit;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 7px 14px; cursor: pointer; text-decoration: none;
+      transition: border-color 0.12s, color 0.12s, background 0.12s;
+    }
+    #back-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-muted); }
+    h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.5px; }
+    .page { max-width: 640px; margin: 0 auto; }
+    .intro {
+      font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6;
+    }
+
+    /* ── Topic cards ── */
+    .topic { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+    .topic-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 18px; cursor: pointer; background: var(--surface);
+      user-select: none; gap: 14px;
+      transition: background 0.12s;
+    }
+    .topic-header:hover { background: var(--surface-raised); }
+    .topic-header-left { display: flex; align-items: center; gap: 14px; flex: 1; }
+
+    /* ── Topic icon chip ── */
+    .topic-icon {
+      width: 34px; height: 34px; flex-shrink: 0;
+      background: var(--blue-muted); border: 1px solid rgba(0, 107, 182, 0.2);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 900; color: var(--blue);
+      font-family: inherit; letter-spacing: -0.5px; line-height: 1;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .topic.open .topic-icon {
+      background: var(--accent-muted);
+      border-color: rgba(245, 132, 38, 0.3);
+      color: var(--accent);
+    }
+
+    .topic-title { font-size: 1rem; font-weight: 800; letter-spacing: -0.2px; }
+    .topic-sub { font-size: 0.75rem; color: var(--text-tertiary); margin-top: 2px; font-weight: 500; }
+
+    .chevron {
+      color: var(--text-quaternary); flex-shrink: 0; display: flex;
+      transition: transform 0.2s, color 0.15s;
+    }
+    .topic.open .chevron { transform: rotate(90deg); color: var(--accent); }
+
+    /* ── Lesson body ── */
+    .lesson-body {
+      display: none; padding: 0 20px 24px; background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+    .topic.open .lesson-body { display: block; }
+    .lesson-body h3 {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-quaternary); margin: 20px 0 8px;
+    }
+    .lesson-body p {
+      font-size: 0.92rem; line-height: 1.65; color: var(--text-secondary); margin-bottom: 10px;
+    }
+    .lesson-body strong { color: var(--text); font-weight: 700; }
+    .rule {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px 16px; margin: 10px 0; font-size: 0.92rem; line-height: 1.6;
+      color: var(--text-dim);
+    }
+    .rule strong { color: var(--text); }
+    .examples { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; }
+    .example {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .example .q { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .example .steps { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.7; }
+    .example .answer {
+      display: inline-block; margin-top: 8px;
+      font-size: 0.85rem; font-weight: 800; color: var(--text);
+      background: var(--surface-raised); border-radius: 4px; padding: 2px 8px;
+    }
+    .keywords { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .kw {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px 12px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+    }
+    .kw span { color: var(--text-tertiary); font-weight: 500; font-size: 0.75rem; margin-left: 4px; }
+    .practice-btn {
+      display: block; width: 100%; margin-top: 20px;
+      background: var(--accent); border: none; border-radius: 8px; color: var(--accent-text);
+      font-family: inherit; font-size: 0.75rem; font-weight: 800;
+      letter-spacing: 2px; text-transform: uppercase; padding: 14px; cursor: pointer;
+      transition: background 0.12s, transform 0.08s;
+    }
+    .practice-btn:hover { background: var(--accent-hover); }
+    .practice-btn:active { transform: scale(0.99); }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <a id="back-btn" href="home.html">Home</a>
+    <h1>Lessons</h1>
+    <div style="width:80px"></div>
+  </div>
+
+  <div class="page">
+    <p class="intro">Choose a topic below to read the lesson, see worked examples, then jump straight into practice.</p>
+
+    <!-- ── FRACTIONS ── -->
+    <div class="topic" id="t-fractions">
+      <div class="topic-header" onclick="toggle('t-fractions')">
+        <div class="topic-header-left">
+          <div class="topic-icon">½</div>
+          <div>
+            <div class="topic-title">Fractions</div>
+            <div class="topic-sub">Parts of a whole, comparing, finding half</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>What is a fraction?</h3>
+        <p>A fraction shows <strong>part of a whole</strong>. It is written as one number over another.</p>
+        <div class="rule">
+          <strong>Top number (numerator)</strong> — how many parts we have<br>
+          <strong>Bottom number (denominator)</strong> — how many equal parts in total<br><br>
+          Example: <strong>3/4</strong> means 3 out of 4 equal parts.
+        </div>
+
+        <h3>Comparing unit fractions (top = 1)</h3>
+        <p>When the top number is 1, a <strong>bigger bottom number means a smaller fraction</strong>. Think of cutting a pizza — more slices means each slice is smaller.</p>
+        <div class="rule">1/2 &gt; 1/3 &gt; 1/4 &gt; 1/5 &gt; 1/6 ...</div>
+
+        <h3>Finding half of a number</h3>
+        <div class="rule">1/2 of a number = divide by 2</div>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">Which is bigger: 1/4 or 1/7?</div>
+            <div class="steps">4 is smaller than 7, so 1/4 is bigger.<br>
+            (Fewer slices = each slice is larger.)</div>
+            <div class="answer">Answer: 1/4</div>
+          </div>
+          <div class="example">
+            <div class="q">What is 1/2 of 18?</div>
+            <div class="steps">18 ÷ 2 = 9</div>
+            <div class="answer">Answer: 9</div>
+          </div>
+          <div class="example">
+            <div class="q">A shape has 6 equal parts and 4 are shaded. What fraction is shaded?</div>
+            <div class="steps">Shaded parts = 4 (top number)<br>Total parts = 6 (bottom number)</div>
+            <div class="answer">Answer: 4/6</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Fractions</button>
+      </div>
+    </div>
+
+    <!-- ── MULTIPLICATION ── -->
+    <div class="topic" id="t-multiplication">
+      <div class="topic-header" onclick="toggle('t-multiplication')">
+        <div class="topic-header-left">
+          <div class="topic-icon">&times;</div>
+          <div>
+            <div class="topic-title">Multiplication</div>
+            <div class="topic-sub">Equal groups, skip counting, times tables</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>What is multiplication?</h3>
+        <p>Multiplication means <strong>adding equal groups</strong>.</p>
+        <div class="rule">4 × 3 = four groups of 3 = 3 + 3 + 3 + 3 = <strong>12</strong></div>
+
+        <h3>How to work it out: skip counting</h3>
+        <p>Say the first number out loud, that many times, counting by the second number.</p>
+        <div class="rule">
+          6 × 4 - count by 4s, six times:<br>
+          4 - 8 - 12 - 16 - 20 - <strong>24</strong>
+        </div>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">What is 7 × 3?</div>
+            <div class="steps">Count by 3s, seven times:<br>3 - 6 - 9 - 12 - 15 - 18 - 21</div>
+            <div class="answer">Answer: 21</div>
+          </div>
+          <div class="example">
+            <div class="q">What is 8 × 5?</div>
+            <div class="steps">Count by 5s, eight times:<br>5 - 10 - 15 - 20 - 25 - 30 - 35 - 40</div>
+            <div class="answer">Answer: 40</div>
+          </div>
+          <div class="example">
+            <div class="q">9 × ? = 63. What is the missing number?</div>
+            <div class="steps">Count by 9s until you reach 63:<br>9 - 18 - 27 - 36 - 45 - 54 - 63 (that's 7 steps)</div>
+            <div class="answer">Answer: 7</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Multiplication</button>
+      </div>
+    </div>
+
+    <!-- ── DIVISION ── -->
+    <div class="topic" id="t-division">
+      <div class="topic-header" onclick="toggle('t-division')">
+        <div class="topic-header-left">
+          <div class="topic-icon">&divide;</div>
+          <div>
+            <div class="topic-title">Division</div>
+            <div class="topic-sub">Equal sharing, opposite of multiplication</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>What is division?</h3>
+        <p>Division means <strong>splitting into equal groups</strong>.</p>
+        <div class="rule">20 ÷ 4 = 5<br>"20 split into 4 equal groups = 5 in each group"</div>
+
+        <h3>The shortcut: use multiplication</h3>
+        <p>Division is the <strong>opposite of multiplication</strong>. If you know your times tables, you already know division.</p>
+        <div class="rule">
+          If 6 × 7 = 42, then 42 ÷ 6 = 7 and 42 ÷ 7 = 6
+        </div>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">What is 36 ÷ 4?</div>
+            <div class="steps">Ask: 4 × ? = 36<br>Count by 4s: 4, 8, 12, 16, 20, 24, 28, 32, 36 - that's 9 steps</div>
+            <div class="answer">Answer: 9</div>
+          </div>
+          <div class="example">
+            <div class="q">What is 56 ÷ 7?</div>
+            <div class="steps">Ask: 7 × ? = 56<br>7 × 8 = 56 ✓</div>
+            <div class="answer">Answer: 8</div>
+          </div>
+          <div class="example">
+            <div class="q">30 students sit at tables of 6. How many tables?</div>
+            <div class="steps">30 ÷ 6 = ?<br>6 × 5 = 30 ✓</div>
+            <div class="answer">Answer: 5 tables</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Division</button>
+      </div>
+    </div>
+
+    <!-- ── PLACE VALUE ── -->
+    <div class="topic" id="t-place-value">
+      <div class="topic-header" onclick="toggle('t-place-value')">
+        <div class="topic-header-left">
+          <div class="topic-icon" style="font-size:0.7rem; letter-spacing:0;">#</div>
+          <div>
+            <div class="topic-title">Place Value</div>
+            <div class="topic-sub">Hundreds, tens, ones, and rounding</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>Every digit has a position</h3>
+        <div class="rule">
+          Example: <strong>472</strong><br><br>
+          4 - <strong>Hundreds</strong> place - value is <strong>400</strong><br>
+          7 - <strong>Tens</strong> place &nbsp;&nbsp;&nbsp;&nbsp;- value is <strong>70</strong><br>
+          2 - <strong>Ones</strong> place &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- value is <strong>2</strong><br><br>
+          400 + 70 + 2 = 472
+        </div>
+
+        <h3>Rounding to the nearest ten</h3>
+        <div class="rule">
+          Look at the <strong>ones digit</strong>.<br>
+          5 or more - round <strong>up</strong><br>
+          Less than 5 - round <strong>down</strong> (keep the tens digit the same)
+        </div>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">What is the value of the digit 5 in 357?</div>
+            <div class="steps">5 is in the tens place. Tens × 5 = 50.</div>
+            <div class="answer">Answer: 50</div>
+          </div>
+          <div class="example">
+            <div class="q">What number has 3 hundreds, 0 tens, and 8 ones?</div>
+            <div class="steps">300 + 0 + 8 = 308</div>
+            <div class="answer">Answer: 308</div>
+          </div>
+          <div class="example">
+            <div class="q">Round 74 to the nearest ten.</div>
+            <div class="steps">Ones digit is 4 - less than 5 - round down - keep tens digit (7) the same - 70</div>
+            <div class="answer">Answer: 70</div>
+          </div>
+          <div class="example">
+            <div class="q">Round 86 to the nearest ten.</div>
+            <div class="steps">Ones digit is 6 - 5 or more - round up - 90</div>
+            <div class="answer">Answer: 90</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Place Value</button>
+      </div>
+    </div>
+
+    <!-- ── TELLING TIME ── -->
+    <div class="topic" id="t-time">
+      <div class="topic-header" onclick="toggle('t-time')">
+        <div class="topic-header-left">
+          <div class="topic-icon" style="font-size:0.72rem; letter-spacing:0;">12</div>
+          <div>
+            <div class="topic-title">Telling Time</div>
+            <div class="topic-sub">Reading clocks, quarter hours, elapsed time</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>The two hands</h3>
+        <div class="rule">
+          <strong>Short hand</strong> - the <strong>hour</strong> (where it points = the hour)<br>
+          <strong>Long hand</strong> - the <strong>minutes</strong>
+        </div>
+
+        <h3>Where the long hand points</h3>
+        <div class="rule">
+          Long hand on <strong>12</strong> - :00 (on the hour)<br>
+          Long hand on <strong>3</strong> &nbsp;- :15 (quarter past)<br>
+          Long hand on <strong>6</strong> &nbsp;- :30 (half past)<br>
+          Long hand on <strong>9</strong> &nbsp;- :45 (quarter to next hour)
+        </div>
+
+        <h3>Adding minutes</h3>
+        <p>Count forward by 5s from the start time.</p>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">Short hand on 7, long hand on 6. What time is it?</div>
+            <div class="steps">Short hand = 7 (hour). Long hand on 6 = 30 minutes.</div>
+            <div class="answer">Answer: 7:30</div>
+          </div>
+          <div class="example">
+            <div class="q">It is 2:00. What time will it be in 45 minutes?</div>
+            <div class="steps">Count by 5s: 2:05 - 2:10 - 2:15 - 2:20 - 2:25 - 2:30 - 2:35 - 2:40 - 2:45</div>
+            <div class="answer">Answer: 2:45</div>
+          </div>
+          <div class="example">
+            <div class="q">A film starts at 3:00 and ends at 5:00. How long is it?</div>
+            <div class="steps">Count from 3 to 5: 3 - 4 - 5 = 2 hours</div>
+            <div class="answer">Answer: 2 hours</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Telling Time</button>
+      </div>
+    </div>
+
+    <!-- ── MEASUREMENT ── -->
+    <div class="topic" id="t-measurement">
+      <div class="topic-header" onclick="toggle('t-measurement')">
+        <div class="topic-header-left">
+          <div class="topic-icon" style="font-size:0.72rem; letter-spacing:0;">cm</div>
+          <div>
+            <div class="topic-title">Measurement</div>
+            <div class="topic-sub">Perimeter, area, and using a ruler</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>Perimeter</h3>
+        <p><strong>Perimeter</strong> is the total distance all the way around a shape. Add up all the sides.</p>
+        <div class="rule">
+          Rectangle perimeter = length + width + length + width<br>
+          = 2 × (length + width)<br><br>
+          Square perimeter = side × 4
+        </div>
+
+        <h3>Area</h3>
+        <p><strong>Area</strong> is the space inside a shape. It is measured in square units (cm²).</p>
+        <div class="rule">Area of a rectangle = length × width</div>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">A rectangle is 8 cm long and 3 cm wide. What is the perimeter?</div>
+            <div class="steps">8 + 3 + 8 + 3 = 22 cm<br>(or 2 × (8 + 3) = 2 × 11 = 22)</div>
+            <div class="answer">Answer: 22 cm</div>
+          </div>
+          <div class="example">
+            <div class="q">A rectangle is 6 cm long and 4 cm wide. What is the area?</div>
+            <div class="steps">Area = 6 × 4 = 24</div>
+            <div class="answer">Answer: 24 cm²</div>
+          </div>
+          <div class="example">
+            <div class="q">A square has sides of 5 cm. What is its perimeter?</div>
+            <div class="steps">5 × 4 = 20</div>
+            <div class="answer">Answer: 20 cm</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Measurement</button>
+      </div>
+    </div>
+
+    <!-- ── WORD PROBLEMS ── -->
+    <div class="topic" id="t-word-problems">
+      <div class="topic-header" onclick="toggle('t-word-problems')">
+        <div class="topic-header-left">
+          <div class="topic-icon">?</div>
+          <div>
+            <div class="topic-title">Word Problems</div>
+            <div class="topic-sub">Finding the right operation from keywords</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>Step 1 - Look for key words</h3>
+        <div class="keywords">
+          <div class="kw">total / in all / altogether <span>- ADD</span></div>
+          <div class="kw">left / fewer / difference <span>- SUBTRACT</span></div>
+          <div class="kw">each / groups of / times <span>- MULTIPLY</span></div>
+          <div class="kw">shared equally / split / per <span>- DIVIDE</span></div>
+        </div>
+
+        <h3>Step 2 - Write the number sentence</h3>
+        <p>Put the numbers from the problem into a maths sentence, then solve.</p>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">Maya had 35 stickers and gave 12 to a friend. How many does she have left?</div>
+            <div class="steps">Key word: "left" - subtract<br>35 - 12 = 23</div>
+            <div class="answer">Answer: 23</div>
+          </div>
+          <div class="example">
+            <div class="q">There are 5 bags with 8 apples in each. How many apples in total?</div>
+            <div class="steps">Key word: "in each" and "total" - multiply<br>5 × 8 = 40</div>
+            <div class="answer">Answer: 40</div>
+          </div>
+          <div class="example">
+            <div class="q">24 books are shared equally between 6 students. How many does each student get?</div>
+            <div class="steps">Key word: "shared equally" - divide<br>24 ÷ 6 = 4</div>
+            <div class="answer">Answer: 4</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Word Problems</button>
+      </div>
+    </div>
+
+    <!-- ── EQUALS SIGN ── -->
+    <div class="topic" id="t-equals">
+      <div class="topic-header" onclick="toggle('t-equals')">
+        <div class="topic-header-left">
+          <div class="topic-icon">=</div>
+          <div>
+            <div class="topic-title">The Equals Sign</div>
+            <div class="topic-sub">Balance - both sides must be the same</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>The equals sign is a balance</h3>
+        <p>The <strong>=</strong> sign means both sides of the equation must equal the <strong>same amount</strong>. Think of a weighing scale - it must be perfectly balanced.</p>
+        <div class="rule">
+          5 + 3 = 4 + ?<br><br>
+          Left side: 5 + 3 = <strong>8</strong><br>
+          Right side must also = 8<br>
+          4 + ? = 8 - ? = <strong>4</strong>
+        </div>
+
+        <h3>How to solve it</h3>
+        <p><strong>Step 1:</strong> Work out the side you already know fully.<br>
+        <strong>Step 2:</strong> The other side must equal the same number.<br>
+        <strong>Step 3:</strong> Find the missing number.</p>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">6 + 7 = ___ + 5. What goes in the blank?</div>
+            <div class="steps">Left side: 6 + 7 = 13<br>Right side must = 13<br>___ + 5 = 13 - ___ = 8</div>
+            <div class="answer">Answer: 8</div>
+          </div>
+          <div class="example">
+            <div class="q">___ + 4 = 3 + 9. What goes in the blank?</div>
+            <div class="steps">Right side: 3 + 9 = 12<br>Left side must = 12<br>___ + 4 = 12 - ___ = 8</div>
+            <div class="answer">Answer: 8</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Equals Sign</button>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <script>
+    function toggle(id) {
+      var el = document.getElementById(id);
+      el.classList.toggle("open");
+    }
+
+    function practice() {
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

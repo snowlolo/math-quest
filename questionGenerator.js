@@ -1,7 +1,3 @@
-// Returns a random math question for Grade 3/4 students.
-// Each question has: { question, answer, hint, topic }
-// Hints never give the final answer.
-
 function getQuestion() {
   var topics = [
     getFractionQuestion,
@@ -13,18 +9,11 @@ function getQuestion() {
     getWordProblemQuestion,
     getEqualsSignQuestion,
   ];
-
-  var randomTopic = topics[Math.floor(Math.random() * topics.length)];
-  return randomTopic();
+  return topics[Math.floor(Math.random() * topics.length)]();
 }
 
-function pick(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function rand(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
 
 // ── Fractions ────────────────────────────────────────────────────────────────
@@ -33,49 +22,62 @@ function getFractionQuestion() {
   var type = rand(1, 4);
 
   if (type === 1) {
-    // Compare two unit fractions: which is bigger?
-    var a = rand(2, 10);
-    var b = rand(2, 10);
+    var a = rand(2, 10), b = rand(2, 10);
     while (b === a) b = rand(2, 10);
-    var bigger = a < b ? a : b; // smaller denominator = bigger fraction
+    var bigger = a < b ? a : b;
+    var smaller = a < b ? b : a;
+    // Other unit fractions as plausible distractors
+    var pool = [2,3,4,5,6,7,8,9,10].filter(function(n) { return n !== a && n !== b; });
     return {
       question: "Which is bigger: 1/" + a + " or 1/" + b + "?",
       answer: "1/" + bigger,
+      distractors: ["1/" + smaller, "1/" + pool[0], "1/" + pool[1]],
       hint: "Think about cutting a pizza into " + a + " slices vs " + b + " slices. Which slice is larger?",
       topic: "fractions",
     };
   }
 
   if (type === 2) {
-    // Half of a number
-    var whole = rand(2, 20) * 2; // always even
+    var whole = rand(3, 20) * 2;
+    var ans2 = whole / 2;
     return {
       question: "What is 1/2 of " + whole + "?",
-      answer: whole / 2,
+      answer: ans2,
+      // whole = didn't halve; ans2-2 = slightly low; ans2+2 = slightly high
+      distractors: [String(whole), String(ans2 - 2), String(ans2 + 2)],
       hint: "Split " + whole + " into 2 equal groups. How many are in each group?",
       topic: "fractions",
     };
   }
 
   if (type === 3) {
-    // What fraction is shaded?
-    var total = rand(2, 8);
-    var shaded = rand(1, total - 1);
+    var total = rand(3, 8), shaded = rand(1, total - 1);
+    var ans3 = shaded + "/" + total;
+    // Unshaded fraction is the classic wrong answer; also off-by-one in numerator and denominator
+    var cands = [
+      (total - shaded) + "/" + total,
+      (shaded + 1 < total ? shaded + 1 : shaded - 1) + "/" + total,
+      shaded + "/" + (total + 1),
+      (shaded > 1 ? shaded - 1 : shaded + 2) + "/" + total,
+    ];
+    var ds3 = cands.filter(function(d, i, arr) {
+      return d !== ans3 && arr.indexOf(d) === i;
+    }).slice(0, 3);
     return {
       question: "A shape is split into " + total + " equal parts and " + shaded + " parts are shaded. What fraction is shaded?",
-      answer: shaded + "/" + total,
+      answer: ans3,
+      distractors: ds3,
       hint: "The bottom number is how many parts in total. The top number is how many are shaded.",
       topic: "fractions",
     };
   }
 
-  // type === 4: fraction of a group
-  var denom = pick([2, 3, 4]);
-  var groups = rand(2, 6);
-  var total2 = denom * groups;
+  var denom = pick([2, 3, 4]), groups = rand(2, 6), total2 = denom * groups;
   return {
     question: "What is 1/" + denom + " of " + total2 + "?",
     answer: groups,
+    // total2 = didn't divide; denom = confused the denominator with the answer; groups+1 = off by one
+    distractors: [String(total2), String(denom), String(groups + 1)],
     hint: "Split " + total2 + " into " + denom + " equal groups. How many are in each group?",
     topic: "fractions",
   };
@@ -85,10 +87,9 @@ function getFractionQuestion() {
 // ── Multiplication ───────────────────────────────────────────────────────────
 
 function getMultiplicationQuestion() {
-  var a = rand(2, 10);
-  var b = rand(2, 10);
+  var a = rand(2, 10), b = rand(2, 10);
   return {
-    question: "What is " + a + " × " + b + "?",
+    question: "What is " + a + " x " + b + "?",
     answer: a * b,
     hint: "Try skip counting by " + a + ", " + b + " times.",
     topic: "multiplication",
@@ -99,13 +100,11 @@ function getMultiplicationQuestion() {
 // ── Division ─────────────────────────────────────────────────────────────────
 
 function getDivisionQuestion() {
-  var b = rand(2, 10);
-  var answer = rand(2, 10);
-  var a = b * answer;
+  var b = rand(2, 10), answer = rand(2, 10);
   return {
-    question: "What is " + a + " ÷ " + b + "?",
+    question: "What is " + (b * answer) + " / " + b + "?",
     answer: answer,
-    hint: "Think: how many groups of " + b + " fit into " + a + "?",
+    hint: "Think: how many groups of " + b + " fit into " + (b * answer) + "?",
     topic: "division",
   };
 }
@@ -117,42 +116,45 @@ function getPlaceValueQuestion() {
   var type = rand(1, 4);
 
   if (type === 1) {
-    // Value of a digit
-    var hundreds = rand(1, 9);
-    var tens = rand(0, 9);
-    var ones = rand(0, 9);
+    var hundreds = rand(1, 9), tens = rand(0, 9), ones = rand(0, 9);
     var number = hundreds * 100 + tens * 10 + ones;
-    var places = [];
-    places.push({ digit: hundreds, place: "hundreds", value: hundreds * 100 });
+    var places = [{ digit: hundreds, place: "hundreds", value: hundreds * 100 }];
     if (tens > 0) places.push({ digit: tens, place: "tens", value: tens * 10 });
     if (ones > 0) places.push({ digit: ones, place: "ones", value: ones });
     var chosen = pick(places);
+    // Distractors = same digit at the OTHER place values (the core misconception)
+    var ds1 = [1, 10, 100, 1000]
+      .map(function(p) { return chosen.digit * p; })
+      .filter(function(v) { return v !== chosen.value; })
+      .slice(0, 3)
+      .map(String);
     return {
       question: "What is the value of the digit " + chosen.digit + " in " + number + "?",
       answer: chosen.value,
+      distractors: ds1,
       hint: "Find the digit " + chosen.digit + " in " + number + ". Is it in the ones, tens, or hundreds place?",
       topic: "place value",
     };
   }
 
   if (type === 2) {
-    // Build the number from parts
-    var h = rand(1, 9);
-    var t = rand(0, 9);
-    var o = rand(0, 9);
+    var h = rand(1, 9), t = rand(0, 9), o = rand(0, 9);
+    var ans2 = h * 100 + t * 10 + o;
     return {
       question: "What number has " + h + " hundreds, " + t + " tens, and " + o + " ones?",
-      answer: h * 100 + t * 10 + o,
+      answer: ans2,
+      distractors: [
+        String(h * 100 + o * 10 + t),  // swapped tens and ones digits
+        String(t * 100 + h * 10 + o),  // swapped hundreds and tens digits
+        String(ans2 + 10),              // off by one ten
+      ],
       hint: "Hundreds come first, then tens, then ones. Put them together.",
       topic: "place value",
     };
   }
 
   if (type === 3) {
-    // Expanded form addition
-    var h2 = rand(1, 9);
-    var t2 = rand(1, 9);
-    var o2 = rand(1, 9);
+    var h2 = rand(1, 9), t2 = rand(1, 9), o2 = rand(1, 9);
     return {
       question: "What is " + (h2 * 100) + " + " + (t2 * 10) + " + " + o2 + "?",
       answer: h2 * 100 + t2 * 10 + o2,
@@ -161,13 +163,19 @@ function getPlaceValueQuestion() {
     };
   }
 
-  // type === 4: round to nearest ten
-  var n = rand(11, 99);
-  var rounded = Math.round(n / 10) * 10;
+  var n = rand(11, 99), rounded = Math.round(n / 10) * 10;
+  var roundDown = n - (n % 10);
+  var roundUp = roundDown + 10;
+  var wrongWay = (rounded === roundDown) ? roundUp : roundDown;
+  var further = (rounded === roundDown)
+    ? (roundDown > 10 ? roundDown - 10 : roundUp + 10)
+    : roundUp + 10;
   return {
     question: "Round " + n + " to the nearest ten.",
     answer: rounded,
-    hint: "Look at the ones digit of " + n + ". If it is 5 or more, round up. If it is less than 5, round down.",
+    // n = didn't round; wrongWay = rounded the wrong direction; further = over-rounded
+    distractors: [String(n), String(wrongWay), String(further)],
+    hint: "Look at the ones digit of " + n + ". If it is 5 or more, round up. If less than 5, round down.",
     topic: "place value",
   };
 }
@@ -179,46 +187,60 @@ function getTimeQuestion() {
   var type = rand(1, 3);
 
   if (type === 1) {
-    // Read a clock time
     var hour = rand(1, 12);
-    var minuteChoices = [0, 15, 30, 45];
-    var minutes = pick(minuteChoices);
+    var minutes = pick([0, 15, 30, 45]);
     var minuteStr = minutes < 10 ? "0" + minutes : "" + minutes;
-    var longHandDescriptions = { 0: "12", 15: "3", 30: "6", 45: "9" };
-    var longHand = longHandDescriptions[minutes];
+    var longHand = { 0: "12", 15: "3", 30: "6", 45: "9" }[minutes];
+    var quarters = [0, 15, 30, 45];
+    var qIdx = quarters.indexOf(minutes);
+    var nextMin = quarters[(qIdx + 1) % 4];
+    var nextMinStr = nextMin < 10 ? "0" + nextMin : "" + nextMin;
+    var nextHour = (hour === 12 ? 1 : hour + 1);
     return {
       question: "The short hand points to " + hour + " and the long hand points to " + longHand + ". What time is it?",
       answer: hour + ":" + minuteStr,
+      // All require knowing both hands; each wrong option errors on exactly one hand
+      distractors: [
+        hour + ":" + nextMinStr,      // right hour, misread long hand
+        nextHour + ":" + minuteStr,   // right minutes, misread short hand
+        nextHour + ":" + nextMinStr,  // both hands misread
+      ],
       hint: "Count by 5s from 12 to where the long hand points to find the minutes.",
       topic: "telling time",
     };
   }
 
   if (type === 2) {
-    // Add minutes to a time
-    var startHour = rand(1, 11);
-    var addMinutes = pick([15, 30, 45]);
-    var startTotal = startHour * 60;
-    var endTotal = startTotal + addMinutes;
-    var endHour = Math.floor(endTotal / 60);
-    var endMin = endTotal % 60;
+    var startHour = rand(1, 11), addMinutes = pick([15, 30, 45]);
+    var endTotal = startHour * 60 + addMinutes;
+    var endHour = Math.floor(endTotal / 60), endMin = endTotal % 60;
     var endMinStr = endMin < 10 ? "0" + endMin : "" + endMin;
+    var wrongMins = (addMinutes === 15) ? 30 : 15;
+    var wrongMinStr = wrongMins < 10 ? "0" + wrongMins : "" + wrongMins;
+    var nextStartHour = (startHour === 12 ? 1 : startHour + 1);
     return {
       question: "It is " + startHour + ":00. What time will it be in " + addMinutes + " minutes?",
       answer: endHour + ":" + endMinStr,
+      distractors: [
+        startHour + ":00",              // forgot to add time at all
+        nextStartHour + ":00",          // added 1 hour instead of minutes
+        endHour + ":" + wrongMinStr,    // right hour, wrong number of minutes
+      ],
       hint: "Start at " + startHour + ":00 and count forward by 5s until you have counted " + addMinutes + " minutes.",
       topic: "telling time",
     };
   }
 
-  // type === 3: elapsed hours
-  var fromHour = rand(1, 6);
-  var duration = rand(1, 5);
-  var toHour = fromHour + duration;
+  var fromHour = rand(1, 6), duration = rand(1, 5);
   return {
-    question: "An event starts at " + fromHour + ":00 and ends at " + toHour + ":00. How many hours long is it?",
+    question: "An event starts at " + fromHour + ":00 and ends at " + (fromHour + duration) + ":00. How many hours long is it?",
     answer: duration,
-    hint: "Count forward from " + fromHour + " to " + toHour + ". How many hours did you count?",
+    distractors: [
+      String(duration + 1),
+      String(duration - 1 > 0 ? duration - 1 : duration + 2),
+      String(fromHour + duration),  // the end time itself, confused with duration
+    ],
+    hint: "Count forward from " + fromHour + " to " + (fromHour + duration) + ". How many hours did you count?",
     topic: "telling time",
   };
 }
@@ -230,9 +252,7 @@ function getMeasurementQuestion() {
   var type = rand(1, 4);
 
   if (type === 1) {
-    // Perimeter of rectangle
-    var l = rand(2, 12);
-    var w = rand(2, 12);
+    var l = rand(2, 12), w = rand(2, 12);
     return {
       question: "A rectangle is " + l + " cm long and " + w + " cm wide. What is its perimeter?",
       answer: 2 * (l + w),
@@ -242,9 +262,7 @@ function getMeasurementQuestion() {
   }
 
   if (type === 2) {
-    // Area of rectangle
-    var l2 = rand(2, 12);
-    var w2 = rand(2, 12);
+    var l2 = rand(2, 12), w2 = rand(2, 12);
     return {
       question: "A rectangle is " + l2 + " cm long and " + w2 + " cm wide. What is its area?",
       answer: l2 * w2,
@@ -254,7 +272,6 @@ function getMeasurementQuestion() {
   }
 
   if (type === 3) {
-    // Perimeter of square
     var side = rand(2, 15);
     return {
       question: "A square has sides of " + side + " cm. What is its perimeter?",
@@ -264,12 +281,11 @@ function getMeasurementQuestion() {
     };
   }
 
-  // type === 4: ruler reading (always start at 0)
   var length = rand(3, 20);
   return {
     question: "You place a pencil starting at 0 cm on a ruler. The other end reaches " + length + " cm. How long is the pencil?",
     answer: length + " cm",
-    hint: "When you start at 0, the number at the other end is the length. Make sure you started at 0, not 1.",
+    hint: "When you start at 0, the number at the other end is the length.",
     topic: "measurement",
   };
 }
@@ -281,55 +297,46 @@ function getWordProblemQuestion() {
   var type = rand(1, 4);
 
   if (type === 1) {
-    // Equal sharing (division)
-    var divisor = pick([2, 3, 4, 5, 6]);
-    var answer = rand(2, 10);
-    var total = divisor * answer;
+    var divisor = pick([2, 3, 4, 5, 6]), answer = rand(2, 10), total = divisor * answer;
     var things = pick(["students", "apples", "stickers", "books", "crayons"]);
     var containers = pick(["tables", "bags", "boxes", "groups", "friends"]);
     return {
       question: "There are " + total + " " + things + " shared equally between " + divisor + " " + containers + ". How many " + things + " does each " + containers.slice(0, -1) + " get?",
       answer: answer,
-      hint: "Shared equally means split into groups. Which operation do you use to split into equal groups?",
+      hint: "Shared equally means split into groups. Which operation splits into equal groups?",
       topic: "word problems",
     };
   }
 
   if (type === 2) {
-    // Equal groups (multiplication)
-    var groups = rand(2, 9);
-    var perGroup = rand(2, 9);
+    var groups = rand(2, 9), perGroup = rand(2, 9);
     var items = pick(["apples", "stickers", "pencils", "books", "cookies"]);
     var containers2 = pick(["bags", "boxes", "baskets", "shelves", "plates"]);
     return {
-      question: "There are " + groups + " " + containers2 + " with " + perGroup + " " + items + " in each. How many " + items + " are there in total?",
+      question: "There are " + groups + " " + containers2 + " with " + perGroup + " " + items + " in each. How many " + items + " in total?",
       answer: groups * perGroup,
-      hint: "You have equal groups. That is a clue — which operation do you use for equal groups?",
+      hint: "You have equal groups. Which operation do you use for equal groups?",
       topic: "word problems",
     };
   }
 
   if (type === 3) {
-    // Subtraction story
-    var start = rand(20, 80);
-    var given = rand(5, start - 5);
-    var names = pick(["Maya", "Jake", "Priya", "Leo", "Sofia"]);
+    var start = rand(20, 80), given = rand(5, start - 5);
+    var name = pick(["Maya", "Jake", "Priya", "Leo", "Sofia"]);
     var items2 = pick(["stickers", "marbles", "cards", "coins", "beads"]);
     return {
-      question: names + " had " + start + " " + items2 + " and gave " + given + " to a friend. How many does " + names + " have left?",
+      question: name + " had " + start + " " + items2 + " and gave " + given + " to a friend. How many does " + name + " have left?",
       answer: start - given,
       hint: "She is giving some away, so the total gets smaller. What operation makes a number smaller?",
       topic: "word problems",
     };
   }
 
-  // type === 4: addition story
-  var day1 = rand(10, 50);
-  var day2 = rand(10, 50);
-  var names2 = pick(["Maya", "Jake", "Priya", "Leo", "Sofia"]);
+  var day1 = rand(10, 50), day2 = rand(10, 50);
+  var name2 = pick(["Maya", "Jake", "Priya", "Leo", "Sofia"]);
   var activity = pick(["pages read", "stickers collected", "points scored", "steps walked"]);
   return {
-    question: names2 + " got " + day1 + " " + activity + " on Monday and " + day2 + " on Tuesday. How many " + activity + " in total?",
+    question: name2 + " got " + day1 + " " + activity + " on Monday and " + day2 + " on Tuesday. How many " + activity + " in total?",
     answer: day1 + day2,
     hint: "You are joining two amounts together. What operation joins numbers?",
     topic: "word problems",
@@ -337,34 +344,35 @@ function getWordProblemQuestion() {
 }
 
 
-// ── Equals Sign (Balance) ────────────────────────────────────────────────────
+// ── Equals Sign ──────────────────────────────────────────────────────────────
 
 function getEqualsSignQuestion() {
   var type = rand(1, 2);
 
   if (type === 1) {
-    // a + b = ___ + c  →  find blank
-    var a = rand(1, 10);
-    var b = rand(1, 10);
-    var c = rand(1, a + b - 1); // ensure blank is positive
-    var blank = a + b - c;
+    var a = rand(1, 10), b = rand(1, 10), c = rand(1, a + b - 1);
+    var ans1 = a + b - c;
+    // "a+b" = computed the left side but forgot to subtract c (very common!)
+    // c itself = just wrote the visible number
+    var d2 = (c === ans1) ? c + 1 : c;
     return {
       question: a + " + " + b + " = ___ + " + c + ". What number goes in the blank?",
-      answer: blank,
-      hint: "Both sides of the = sign must equal the same amount. What does " + a + " + " + b + " equal?",
+      answer: ans1,
+      distractors: [String(a + b), String(d2), String(ans1 + 2)],
+      hint: "Both sides of the = sign must be equal. What does " + a + " + " + b + " equal?",
       topic: "equals sign",
     };
   }
 
-  // type === 2: ___ + a = b + c  →  find blank
-  var b2 = rand(1, 10);
-  var c2 = rand(1, 10);
-  var total2 = b2 + c2;
-  var a2 = rand(1, total2 - 1);
-  var blank2 = total2 - a2;
+  var b2 = rand(1, 10), c2 = rand(1, 10), total = b2 + c2, a2 = rand(1, total - 1);
+  var ans2 = total - a2;
+  // total = computed the right side but forgot to subtract a2
+  // a2 = just wrote the visible number
+  var d2_2 = (a2 === ans2) ? a2 + 1 : a2;
   return {
     question: "___ + " + a2 + " = " + b2 + " + " + c2 + ". What number goes in the blank?",
-    answer: blank2,
+    answer: ans2,
+    distractors: [String(total), String(d2_2), String(ans2 + 2)],
     hint: "Work out " + b2 + " + " + c2 + " first. Then ask: what plus " + a2 + " gives that same total?",
     topic: "equals sign",
   };

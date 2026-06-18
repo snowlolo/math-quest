@@ -3,18 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Math Quest - Leaderboard</title>
+  <title>HW Helper - Leaderboard</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="theme.css" />
+  <script src="theme.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #1a1a6e, #3b0f8c, #6a0dad);
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 30px 20px;
-      color: white;
+      color: var(--text);
     }
     #header {
       width: 100%; max-width: 600px;
@@ -22,52 +25,59 @@
       margin-bottom: 28px;
     }
     #back-btn {
-      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 10px; color: white; font-size: 0.9rem; font-weight: 600;
-      padding: 6px 14px; cursor: pointer; text-decoration: none;
-      transition: background 0.15s;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-secondary); font-family: inherit;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 7px 14px; cursor: pointer; text-decoration: none;
     }
-    #back-btn:hover { background: rgba(255,255,255,0.25); }
-    h1 { font-size: 2rem; font-weight: 900; color: #ffe566; text-shadow: 2px 2px 0 #b8860b; }
+    #back-btn:hover { border-color: var(--blue); color: var(--blue); }
+    h1 { font-size: 1.6rem; font-weight: 900; color: var(--text); letter-spacing: -1px; }
     .card {
-      background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.25);
-      border-radius: 24px; padding: 32px 28px; width: 100%; max-width: 600px;
-      backdrop-filter: blur(8px); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 600px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
     }
     .empty {
-      text-align: center; color: rgba(255,255,255,0.5);
-      font-size: 1rem; padding: 40px 0;
+      text-align: center; color: var(--text-tertiary);
+      font-size: 0.9rem; padding: 40px 0; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
     }
     .row {
       display: flex; align-items: center; gap: 16px;
-      padding: 14px 16px; border-radius: 14px; margin-bottom: 10px;
-      background: rgba(255,255,255,0.08);
-      transition: background 0.15s;
+      padding: 14px 16px; border-radius: 10px; margin-bottom: 8px;
+      border: 1px solid transparent;
     }
-    .row:hover { background: rgba(255,255,255,0.14); }
-    .row.gold   { background: rgba(255,215,0,0.18); border: 1px solid rgba(255,215,0,0.4); }
-    .row.silver { background: rgba(192,192,192,0.15); border: 1px solid rgba(192,192,192,0.3); }
-    .row.bronze { background: rgba(205,127,50,0.15); border: 1px solid rgba(205,127,50,0.3); }
-    .rank { font-size: 1.4rem; width: 36px; text-align: center; flex-shrink: 0; }
-    .name { flex: 1; font-size: 1.1rem; font-weight: 700; }
-    .score { font-size: 1.1rem; font-weight: 800; color: #ffe566; }
+    .row:hover { background: var(--surface-raised); }
+    .row.gold   { border-color: var(--accent); background: var(--accent-muted); }
+    .row.silver { border-color: rgba(160, 160, 172, 0.35); }
+    .row.bronze { border-color: rgba(160, 110, 60, 0.3); }
+    .rank { font-size: 0.85rem; font-weight: 900; width: 28px; text-align: center; flex-shrink: 0; color: var(--text-tertiary); }
+    .row.gold   .rank { color: var(--accent); font-size: 1rem; }
+    .row.silver .rank { color: #a0a0ac; }
+    .row.bronze .rank { color: #a06e3c; }
+    .name { flex: 1; font-size: 1rem; font-weight: 700; color: var(--text-dim); }
+    .row.gold .name { color: var(--text-dim); }
+    .score { font-size: 1rem; font-weight: 800; color: var(--text-tertiary); }
+    .row.gold   .score { color: var(--accent); }
+    .row.silver .score { color: var(--text-secondary); }
     .you-tag {
-      background: #ffe566; color: #3b0f8c; font-size: 0.7rem;
-      font-weight: 800; border-radius: 20px; padding: 2px 8px;
+      background: var(--blue); color: #ffffff; font-size: 0.65rem;
+      font-weight: 800; border-radius: 4px; padding: 2px 7px;
+      letter-spacing: 1px; text-transform: uppercase;
     }
   </style>
 </head>
 <body>
   <div id="header">
-    <a id="back-btn" href="index.html">&#8592; Home</a>
-    <h1>&#127942; Leaderboard</h1>
+    <a id="back-btn" href="home.html">Home</a>
+    <h1>Leaderboard</h1>
     <div style="width:80px"></div>
   </div>
 
   <div class="card" id="board"></div>
 
   <script>
-    var medals = ["&#127947;", "&#129352;", "&#129353;"];
+    var medals = ["1", "2", "3"];
     var medalClass = ["gold", "silver", "bronze"];
 
     function render() {

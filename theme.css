@@ -1,0 +1,86 @@
+/* ── Self-hosted Outfit font (cached by service worker) ─────────────────── */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('./fonts/outfit-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('./fonts/outfit-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── CSS variables — dark is default ───────────────────────────────────── */
+:root {
+  --bg:              #0a0a0a;
+  --surface:         #111111;
+  --surface-raised:  #161616;
+  --border:          #1e1e1e;
+  --text:            #ffffff;
+  --text-dim:        #cccccc;
+  --text-secondary:  #888888;
+  --text-tertiary:   #444444;
+  --text-quaternary: #2a2a2a;
+  --accent:          #F58426;
+  --accent-text:     #000000;
+  --accent-hover:    #E07020;
+  --accent-muted:    rgba(245, 132, 38, 0.10);
+  --blue:            #006BB6;
+  --blue-muted:      rgba(0, 107, 182, 0.12);
+}
+
+[data-theme="light"] {
+  --bg:              #f5f5f5;
+  --surface:         #ffffff;
+  --surface-raised:  #eeeeee;
+  --border:          #e0e0e0;
+  --text:            #000000;
+  --text-dim:        #222222;
+  --text-secondary:  #555555;
+  --text-tertiary:   #999999;
+  --text-quaternary: #cccccc;
+  --accent:          #B84D10;
+  --accent-text:     #ffffff;
+  --accent-hover:    #9A3D08;
+  --accent-muted:    rgba(184, 77, 16, 0.08);
+  --blue:            #006BB6;
+  --blue-muted:      rgba(0, 107, 182, 0.10);
+}
+
+/* ── Force form elements to inherit the page font ───────────────────────── */
+button, input, textarea, select { font-family: inherit; }
+
+/* ── Smooth theme transitions ───────────────────────────────────────────── */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ── Theme toggle button (fixed, injected by theme.js) ──────────────────── */
+#theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-tertiary);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+}
+#theme-toggle:hover {
+  border-color: var(--text-secondary);
+  color: var(--text);
+}

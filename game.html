@@ -1,127 +1,181 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Math Quest - Play</title>
+  <title>HW Helper</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="theme.css" />
+  <script src="theme.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #1a1a6e, #3b0f8c, #6a0dad);
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      color: white;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px; color: var(--text);
     }
     #header {
       width: 100%; max-width: 700px;
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
-    #left-header { display: flex; align-items: center; gap: 14px; }
+    #left-header { display: flex; align-items: center; gap: 12px; }
     #back-btn {
-      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
-      border-radius: 10px; color: white; font-size: 0.9rem; font-weight: 600;
-      padding: 6px 14px; cursor: pointer; transition: background 0.15s;
-      text-decoration: none;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-tertiary); font-family: inherit;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 7px 13px; cursor: pointer; text-decoration: none;
     }
-    #back-btn:hover { background: rgba(255,255,255,0.25); }
-    #game-title { font-size: 1.4rem; font-weight: 800; color: #ffe566; text-shadow: 2px 2px 0 #b8860b; }
-    #right-header { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    #player-name { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
-    #score-display {
-      background: rgba(255,255,255,0.15); border: 2px solid #ffe566;
-      border-radius: 30px; padding: 6px 18px; font-size: 1rem; font-weight: 700; color: #ffe566;
+    #back-btn:hover { border-color: var(--blue); color: var(--blue); }
+    #game-title { font-size: 0.95rem; font-weight: 900; letter-spacing: -0.3px; color: var(--text); }
+    #mode-badge {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-tertiary); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px;
     }
+    #right-header { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+    #player-name { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text-tertiary); }
+    #score-display { font-size: 1.25rem; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
+    #question-counter { font-size: 1rem; font-weight: 800; color: var(--text); letter-spacing: -0.3px; display: none; }
+    #streak-display { font-size: 0.72rem; font-weight: 700; color: var(--text-tertiary); letter-spacing: 1px; display: none; }
     #timer-bar-wrap {
       width: 100%; max-width: 700px;
-      background: rgba(255,255,255,0.2); border-radius: 10px; height: 14px;
+      background: var(--surface-raised); border-radius: 3px; height: 4px;
       margin-bottom: 20px; overflow: hidden;
     }
-    #timer-bar {
-      height: 100%; width: 100%;
-      background: linear-gradient(90deg, #00e676, #ffe566);
-      border-radius: 10px; transition: width 0.1s linear, background 0.5s;
-    }
+    #timer-bar { height: 100%; width: 100%; background: var(--accent); border-radius: 2px; transition: width 0.1s linear; }
     #question-card {
-      background: rgba(255,255,255,0.12); border: 2px solid rgba(255,255,255,0.25);
-      border-radius: 24px; padding: 36px 32px 28px; width: 100%; max-width: 700px;
-      text-align: center; backdrop-filter: blur(8px); box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 40px 36px 32px; width: 100%; max-width: 700px;
+      text-align: center;
     }
     #topic-badge {
-      display: inline-block; background: #ffe566; color: #3b0f8c;
-      font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
-      letter-spacing: 1px; border-radius: 20px; padding: 4px 14px; margin-bottom: 18px;
+      display: inline-block; background: var(--blue-muted); color: var(--blue);
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 3px; border: 1px solid var(--blue);
+      border-radius: 100px; padding: 5px 14px; margin-bottom: 24px;
+      opacity: 0.85;
     }
-    #question-text { font-size: 1.5rem; font-weight: 700; line-height: 1.4; margin-bottom: 28px; min-height: 60px; }
-    #choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-    .choice-btn {
-      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4);
-      border-radius: 16px; color: white; font-size: 1.1rem; font-weight: 700;
-      padding: 18px 12px; cursor: pointer;
-      transition: background 0.15s, transform 0.1s, border-color 0.15s;
+    #question-text {
+      font-size: 2rem; font-weight: 800; line-height: 1.35;
+      margin-bottom: 32px; min-height: 60px; letter-spacing: -0.5px;
     }
-    .choice-btn:hover { background: rgba(255,255,255,0.28); transform: scale(1.03); }
-    .choice-btn.correct { background: #00c853; border-color: #00e676; }
-    .choice-btn.wrong   { background: #d32f2f; border-color: #ff5252; }
-    .choice-btn:disabled { cursor: default; transform: none; }
-    #typed-area { display: flex; gap: 12px; margin-bottom: 20px; justify-content: center; }
+    #typed-area { display: flex; gap: 10px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; }
     #typed-input {
-      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.4);
-      border-radius: 14px; color: white; font-size: 1.2rem; font-weight: 700;
-      padding: 14px 20px; width: 200px; text-align: center; outline: none;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-family: inherit; font-size: 1.1rem; font-weight: 700;
+      padding: 13px 18px; width: 220px; text-align: center; outline: none;
     }
-    #typed-input::placeholder { color: rgba(255,255,255,0.5); }
-    #typed-input:focus { border-color: #ffe566; }
+    #typed-input::placeholder { color: var(--text-quaternary); }
+    #typed-input:focus { border-color: var(--text-tertiary); }
     #submit-btn {
-      background: #ffe566; border: none; border-radius: 14px; color: #3b0f8c;
-      font-size: 1.1rem; font-weight: 800; padding: 14px 28px; cursor: pointer;
-      transition: transform 0.1s, background 0.15s;
+      background: var(--accent); border: none; border-radius: 8px; color: var(--accent-text);
+      font-family: inherit; font-size: 0.75rem; font-weight: 800;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 13px 32px; cursor: pointer;
+      transition: background 0.12s, transform 0.08s;
     }
-    #submit-btn:hover { transform: scale(1.05); background: #ffd700; }
+    #submit-btn:active { transform: scale(0.98); }
+    #submit-btn:hover { background: var(--accent-hover); }
     #hint-btn {
-      background: transparent; border: 2px solid rgba(255,255,255,0.4);
-      border-radius: 30px; color: rgba(255,255,255,0.8); font-size: 0.9rem;
-      font-weight: 600; padding: 8px 20px; cursor: pointer;
-      transition: background 0.15s, border-color 0.15s; margin-bottom: 16px;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-quaternary); font-family: inherit; font-size: 0.68rem;
+      font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 8px 16px; cursor: pointer; margin-bottom: 14px;
     }
-    #hint-btn:hover { background: rgba(255,255,255,0.12); border-color: white; }
+    #hint-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-muted); }
     #hint-text {
-      background: rgba(255,230,100,0.15); border: 1px solid #ffe566;
-      border-radius: 12px; color: #ffe566; font-size: 0.95rem;
-      padding: 12px 18px; margin-bottom: 16px; display: none; text-align: left;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-secondary); font-size: 0.88rem;
+      padding: 14px 18px; margin-bottom: 14px; display: none; text-align: left; line-height: 1.6;
     }
+    /* ── Multiple choice ── */
+    #choices { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+    .choice-btn {
+      background: var(--surface-raised); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text-dim); font-family: inherit;
+      font-size: 1rem; font-weight: 700; padding: 16px 12px; cursor: pointer;
+      text-align: center; letter-spacing: -0.2px;
+      transition: border-color 0.15s, background 0.15s, transform 0.08s;
+    }
+    .choice-btn:hover { border-color: var(--accent); background: var(--accent-muted); color: var(--text); transform: translateY(-1px); }
+    .choice-btn:active { transform: translateY(0); }
+    .choice-btn:disabled { cursor: default; transform: none; }
+    .choice-btn.correct { background: rgba(22, 163, 74, 0.12); border-color: #16a34a; color: #16a34a; font-weight: 800; }
+    .choice-btn.wrong   { background: rgba(220, 38, 38, 0.08); border-color: #dc2626; color: var(--text-tertiary); }
+
+    #next-btn {
+      width: 100%; background: var(--accent); border: none; border-radius: 8px; color: var(--accent-text);
+      font-family: inherit; font-size: 0.75rem; font-weight: 800;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 15px; cursor: pointer; margin-top: 4px; display: none;
+    }
+    #next-btn:hover { background: var(--accent-hover); }
     #feedback {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       display: none; flex-direction: column; align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.55); z-index: 10;
+      background: rgba(0,0,0,0.75); z-index: 10;
+      backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
     }
     #feedback-box {
-      background: white; border-radius: 28px; padding: 48px 56px;
-      text-align: center; box-shadow: 0 16px 48px rgba(0,0,0,0.4);
-      animation: popIn 0.2s ease;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 44px 52px;
+      text-align: center; animation: popIn 0.17s ease; min-width: 280px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
     }
-    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    #feedback-icon   { font-size: 4rem; margin-bottom: 12px; }
-    #feedback-label  { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
-    #feedback-points { font-size: 1.2rem; color: #555; margin-bottom: 6px; }
-    #feedback-total  { font-size: 1rem; color: #888; }
-    .feedback-correct #feedback-label { color: #00c853; }
-    .feedback-wrong   #feedback-label { color: #d32f2f; }
+    @keyframes popIn { from { transform: scale(0.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    #feedback-label  { font-size: 1.7rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; color: var(--text); }
+    #feedback-points { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
+    #feedback-total  { font-size: 0.78rem; color: var(--text-tertiary); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .feedback-correct #feedback-label { color: #16a34a; }
+    .feedback-wrong   #feedback-label { color: #dc2626; }
+    #test-results {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      background: var(--bg); z-index: 20;
+    }
+    #results-box { text-align: center; max-width: 360px; padding: 20px; }
+    #results-grade {
+      font-size: 9rem; font-weight: 900; letter-spacing: -6px;
+      color: var(--text); line-height: 1; margin-bottom: 20px;
+    }
+    #results-fraction {
+      font-size: 2.8rem; font-weight: 900; letter-spacing: -1px; color: var(--text); margin-bottom: 6px;
+    }
+    #results-pct {
+      font-size: 0.78rem; font-weight: 700; color: var(--text-tertiary);
+      letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px;
+    }
+    #results-msg {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--text-quaternary); margin-bottom: 48px;
+    }
+    #results-actions { display: flex; gap: 10px; justify-content: center; }
+    #results-actions button {
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-tertiary);
+      font-family: inherit; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 13px 20px; cursor: pointer;
+    }
+    #results-actions .btn-primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    #results-actions .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    #results-actions .btn-secondary:hover { border-color: var(--text-tertiary); color: var(--text-secondary); }
   </style>
 </head>
 <body>
   <div id="header">
     <div id="left-header">
-      <a id="back-btn" href="index.html">&#8592; Home</a>
-      <div id="game-title">&#11088; Math Quest</div>
+      <a id="back-btn" href="index.html">Home</a>
+      <div id="game-title">HW Helper</div>
+      <div id="mode-badge"></div>
     </div>
     <div id="right-header">
       <div id="player-name"></div>
-      <div id="score-display">Score: <span id="score-number">0</span></div>
+      <div id="score-display"><span id="score-number">0</span> pts</div>
+      <div id="question-counter">Q <span id="q-current">1</span> / 20</div>
+      <div id="streak-display">Streak <span id="streak-num">0</span></div>
     </div>
   </div>
 
@@ -131,67 +185,129 @@
     <div id="topic-badge">Loading...</div>
     <div id="question-text">Get ready!</div>
     <div id="choices"></div>
-    <div id="typed-area" style="display:none">
+    <div id="typed-area">
       <input id="typed-input" type="text" placeholder="Your answer..." autocomplete="off" />
-      <button id="submit-btn" onclick="handleTypedSubmit()">Go!</button>
+      <button id="submit-btn" onclick="handleTypedSubmit()">Submit</button>
     </div>
-    <button id="hint-btn" onclick="handleHint()">&#128161; Use Hint (-300 pts)</button>
+    <button id="hint-btn" onclick="handleHint()">Hint  &ndash;300 pts</button>
     <div id="hint-text"></div>
+    <button id="next-btn" onclick="loadNextQuestion()">Next Question</button>
   </div>
 
   <div id="feedback">
     <div id="feedback-box">
-      <div id="feedback-icon"></div>
       <div id="feedback-label"></div>
       <div id="feedback-points"></div>
       <div id="feedback-total"></div>
     </div>
   </div>
 
+  <div id="test-results">
+    <div id="results-box">
+      <div id="results-grade"></div>
+      <div id="results-fraction"></div>
+      <div id="results-pct"></div>
+      <div id="results-msg"></div>
+      <div id="results-actions">
+        <button class="btn-primary" onclick="location.href='index.html'">Play Again</button>
+        <button class="btn-secondary" onclick="location.href='leaderboard.html'">Leaderboard</button>
+      </div>
+    </div>
+  </div>
+
   <script src="scoring.js"></script>
   <script src="hints.js"></script>
   <script src="questionGenerator.js"></script>
+  <script src="questionGeneratorHard.js"></script>
   <script>
-    var MULTIPLE_CHOICE_TOPICS = ["fractions", "telling time", "place value", "equals sign"];
+    var MODE_CONFIGS = {
+      classic:  { timeLimit: 30, hints: true,  label: "Classic"  },
+      accuracy: { timeLimit: 0,  hints: true,  label: "Accuracy" },
+      test:     { timeLimit: 0,  hints: false, label: "Test"     },
+      practice: { timeLimit: 0,  hints: true,  label: "Practice" },
+      hard:     { timeLimit: 15, hints: false, label: "Hard"     },
+    };
+
+    var mode = localStorage.getItem("mathGameMode") || "classic";
+    var cfg  = MODE_CONFIGS[mode] || MODE_CONFIGS.classic;
+
+    var storedCount   = parseInt(localStorage.getItem("mathGameQuestionCount") || "0");
+    var maxQ          = storedCount > 0 ? storedCount : 0;
+
     var currentQuestion = null;
-    var timerInterval = null;
-    var TIME_LIMIT = 30;
-    var timeLeft = TIME_LIMIT;
-    var answered = false;
+    var timerInterval   = null;
+    var TIME_LIMIT      = cfg.timeLimit > 0 ? cfg.timeLimit : 30;
+    var timeLeft        = TIME_LIMIT;
+    var answered        = false;
+    var questionCount   = 0;
+    var streak          = 0;
+    var totalCorrect    = 0;
+
+    // ── Init ─────────────────────────────────────────────────────────────────
 
     function startGame() {
-      var player = getCurrentPlayer();
-      document.getElementById("player-name").textContent = "Playing as: " + player;
+      document.getElementById("player-name").textContent = getCurrentPlayer();
+      document.getElementById("mode-badge").textContent  = cfg.label;
+
+      if (cfg.timeLimit === 0) {
+        document.getElementById("timer-bar-wrap").style.display = "none";
+      }
+      if (!cfg.hints) {
+        document.getElementById("hint-btn").style.display = "none";
+      } else if (mode === "practice") {
+        document.getElementById("hint-btn").textContent = "Hint  (free)";
+      }
+      if (mode === "test" || mode === "practice") {
+        document.getElementById("score-display").style.display = "none";
+      }
+      if (maxQ > 0) {
+        document.getElementById("question-counter").style.display = "block";
+      }
+      if (mode === "accuracy") {
+        document.getElementById("streak-display").style.display = "block";
+      }
+
       updateScoreDisplay();
       loadNextQuestion();
     }
 
+    // ── Question flow ─────────────────────────────────────────────────────────
+
     function loadNextQuestion() {
       answered = false;
-      currentQuestion = getQuestion();
+      questionCount++;
+      currentQuestion = mode === "hard" ? getHardQuestion() : getQuestion();
       resetHint();
-      document.getElementById("topic-badge").textContent = currentQuestion.topic.toUpperCase();
-      document.getElementById("question-text").textContent = currentQuestion.question;
-      document.getElementById("hint-text").style.display = "none";
-      document.getElementById("hint-text").textContent = "";
-      var isMultipleChoice = MULTIPLE_CHOICE_TOPICS.indexOf(currentQuestion.topic) !== -1;
-      if (isMultipleChoice) { showMultipleChoice(); } else { showTypedInput(); }
-      startCountdown();
+
+      document.getElementById("topic-badge").textContent     = currentQuestion.topic.toUpperCase();
+      document.getElementById("question-text").textContent   = currentQuestion.question;
+      document.getElementById("hint-text").style.display     = "none";
+      document.getElementById("hint-text").textContent       = "";
+      document.getElementById("next-btn").style.display      = "none";
+
+      if (maxQ > 0) {
+        document.getElementById("question-counter").textContent = "Q " + questionCount + " / " + maxQ;
+      }
+
+      if (currentQuestion.distractors) { showMultipleChoice(); } else { showTypedInput(); }
+
+      if (cfg.timeLimit > 0) { startCountdown(); }
       startTimer();
     }
 
     function showMultipleChoice() {
       document.getElementById("typed-area").style.display = "none";
-      var choicesDiv = document.getElementById("choices");
-      choicesDiv.style.display = "grid";
-      choicesDiv.innerHTML = "";
-      var options = generateChoices(currentQuestion.answer);
-      options.forEach(function(option) {
+      var div = document.getElementById("choices");
+      div.style.display = "grid";
+      div.innerHTML = "";
+      var options = currentQuestion.distractors.concat([String(currentQuestion.answer)]);
+      shuffleArray(options);
+      options.forEach(function(opt) {
         var btn = document.createElement("button");
         btn.className = "choice-btn";
-        btn.textContent = option;
-        btn.onclick = (function(b, o) { return function() { handleChoiceClick(b, o); }; })(btn, option);
-        choicesDiv.appendChild(btn);
+        btn.textContent = opt;
+        btn.onclick = (function(b, o) { return function() { handleChoiceClick(b, o); }; })(btn, opt);
+        div.appendChild(btn);
       });
     }
 
@@ -199,91 +315,171 @@
       if (answered) return;
       answered = true;
       stopCountdown();
-      var result = submitAnswer(chosen, currentQuestion.answer);
-      highlightChoices();
-      showFeedback(result);
-    }
-
-    function highlightChoices() {
-      var buttons = document.querySelectorAll(".choice-btn");
-      buttons.forEach(function(b) {
+      document.querySelectorAll(".choice-btn").forEach(function(b) {
         b.disabled = true;
-        if (String(b.textContent).trim().toLowerCase() === String(currentQuestion.answer).trim().toLowerCase()) {
-          b.classList.add("correct");
-        } else {
-          b.classList.add("wrong");
-        }
+        var isCorrect = b.textContent.trim() === String(currentQuestion.answer).trim();
+        b.classList.add(isCorrect ? "correct" : "wrong");
       });
-    }
-
-    function generateChoices(correct) {
-      var wrongs = [];
-      var correctStr = String(correct);
-      var numericAnswer = parseFloat(correct);
-      if (!isNaN(numericAnswer)) {
-        var offsets = [-2, -1, 1, 2, 3, -3, 5, -5];
-        shuffleArray(offsets);
-        for (var i = 0; i < offsets.length && wrongs.length < 3; i++) {
-          var wrong = numericAnswer + offsets[i];
-          if (wrong > 0 && String(wrong) !== correctStr && wrongs.indexOf(String(wrong)) === -1) {
-            wrongs.push(String(wrong));
-          }
-        }
-      } else {
-        wrongs = generateNonNumericWrongs(correct);
-      }
-      var fallbacks = ["12", "8", "24", "16", "6"];
-      for (var j = 0; wrongs.length < 3 && j < fallbacks.length; j++) {
-        if (fallbacks[j] !== correctStr && wrongs.indexOf(fallbacks[j]) === -1) { wrongs.push(fallbacks[j]); }
-      }
-      var options = wrongs.slice(0, 3).concat([correctStr]);
-      shuffleArray(options);
-      return options;
-    }
-
-    function generateNonNumericWrongs(correct) {
-      if (correct.indexOf("/") !== -1) {
-        var parts = correct.split("/");
-        var num = parseInt(parts[0]);
-        var den = parseInt(parts[1]);
-        return [(num+1)+"/"+den, num+"/"+(den+1), (num+1)+"/"+(den+1)];
-      }
-      if (correct === "yes") return ["no", "maybe", "sometimes"];
-      if (correct === "no")  return ["yes", "maybe", "sometimes"];
-      return ["10", "20", "30"];
+      handleAnswerResult(gradeAnswer(chosen));
     }
 
     function showTypedInput() {
-      document.getElementById("choices").style.display = "none";
-      document.getElementById("choices").innerHTML = "";
+      var choicesDiv = document.getElementById("choices");
+      choicesDiv.style.display = "none";
+      choicesDiv.innerHTML = "";
       document.getElementById("typed-area").style.display = "flex";
-      var input = document.getElementById("typed-input");
-      input.value = "";
-      input.focus();
+      var inp = document.getElementById("typed-input");
+      inp.value = "";
+      inp.focus();
     }
 
     function handleTypedSubmit() {
       if (answered) return;
-      var input = document.getElementById("typed-input");
-      var playerAnswer = input.value.trim();
-      if (!playerAnswer) return;
+      var inp = document.getElementById("typed-input");
+      if (!inp.value.trim()) return;
       answered = true;
       stopCountdown();
-      var result = submitAnswer(playerAnswer, currentQuestion.answer);
-      showFeedback(result);
+      handleAnswerResult(gradeAnswer(inp.value.trim()));
     }
 
     document.getElementById("typed-input").addEventListener("keydown", function(e) {
       if (e.key === "Enter") handleTypedSubmit();
     });
 
-    function handleHint() {
-      var result = useHint(currentQuestion.hint);
-      var hintDiv = document.getElementById("hint-text");
-      hintDiv.textContent = String.fromCodePoint(128161) + " " + result.hint;
-      hintDiv.style.display = "block";
-      if (!result.alreadyUsed) updateScoreDisplay();
+    // ── Grading ───────────────────────────────────────────────────────────────
+
+    function gradeAnswer(playerAnswer) {
+      var timeTaken = (Date.now() - questionStartTime) / 1000;
+      var correct   = String(playerAnswer).trim().toLowerCase() === String(currentQuestion.answer).trim().toLowerCase();
+      var pts       = 0;
+
+      if (mode === "classic" || mode === "hard") {
+        if (correct) { pts = calculatePoints(timeTaken); addToScore(pts); }
+
+      } else if (mode === "accuracy") {
+        if (correct) {
+          streak++;
+          pts = Math.min(streak, 5) * 200;
+          addToScore(pts);
+        } else {
+          streak = 0;
+        }
+        document.getElementById("streak-num").textContent = streak;
+
+      }
+      if (correct) totalCorrect++;
+      // practice / test: no per-question score added
+
+      return {
+        correct: correct,
+        pointsEarned: pts,
+        timeTaken: Math.round(timeTaken * 10) / 10,
+        totalScore: getTotalScore(),
+      };
     }
+
+    // ── Hint ─────────────────────────────────────────────────────────────────
+
+    function handleHint() {
+      var div = document.getElementById("hint-text");
+      if (mode === "practice") {
+        div.textContent = currentQuestion.hint;
+        div.style.display = "block";
+      } else {
+        var r = useHint(currentQuestion.hint);
+        div.textContent = r.hint;
+        div.style.display = "block";
+        if (!r.alreadyUsed) updateScoreDisplay();
+      }
+    }
+
+    // ── Answer result dispatch ────────────────────────────────────────────────
+
+    function handleAnswerResult(result) {
+      updateScoreDisplay();
+
+      if (mode === "practice") {
+        var div = document.getElementById("hint-text");
+        var prefix = result.correct
+          ? "Correct.  "
+          : "Incorrect. The answer was: " + currentQuestion.answer + ".  ";
+        div.textContent = prefix + currentQuestion.hint;
+        div.style.display = "block";
+        document.getElementById("next-btn").style.display = "block";
+        if (maxQ > 0 && questionCount >= maxQ) {
+          document.getElementById("next-btn").textContent = "See Results";
+          document.getElementById("next-btn").onclick = showSessionEnd;
+        }
+        return;
+      }
+
+      var isLast = maxQ > 0 && questionCount >= maxQ;
+      showFeedback(result, isLast);
+    }
+
+    // ── Feedback overlay ──────────────────────────────────────────────────────
+
+    function showFeedback(result, isLast) {
+      var box = document.getElementById("feedback-box");
+      document.getElementById("feedback-label").textContent = result.correct ? "Correct!" : "Not quite!";
+
+      if (mode === "test" || mode === "practice") {
+        document.getElementById("feedback-points").textContent = result.correct
+          ? "Correct"
+          : "Answer: " + currentQuestion.answer;
+        document.getElementById("feedback-total").textContent = totalCorrect + " correct so far";
+      } else {
+        document.getElementById("feedback-points").textContent = result.correct
+          ? "+" + result.pointsEarned + " pts  (" + result.timeTaken + "s)"
+          : "Answer: " + currentQuestion.answer;
+        document.getElementById("feedback-total").textContent = "Total: " + result.totalScore.toLocaleString() + " pts";
+      }
+
+      box.className = result.correct ? "feedback-correct" : "feedback-wrong";
+      document.getElementById("feedback").style.display = "flex";
+
+      setTimeout(function() {
+        document.getElementById("feedback").style.display = "none";
+        if (isLast) { showSessionEnd(); } else { loadNextQuestion(); }
+      }, isLast ? 1200 : 2000);
+    }
+
+    // ── Session end (all modes) ───────────────────────────────────────────────
+
+    function showSessionEnd() {
+      var total = questionCount;
+      var pct   = total > 0 ? Math.round(totalCorrect / total * 100) : 0;
+
+      if (mode === "test") {
+        var grade = pct >= 90 ? "A" : pct >= 80 ? "B" : pct >= 70 ? "C" : pct >= 60 ? "D" : "F";
+        var msgs  = { A: "Outstanding.", B: "Great work.", C: "Good effort.", D: "Keep practicing.", F: "Don't give up." };
+        document.getElementById("results-grade").textContent    = grade;
+        document.getElementById("results-fraction").textContent = totalCorrect + " / " + total;
+        document.getElementById("results-pct").textContent      = pct + "%";
+        document.getElementById("results-msg").textContent      = msgs[grade];
+        // Save test score to leaderboard
+        var scores = JSON.parse(localStorage.getItem("mathGameAllScores") || "{}");
+        var player = getCurrentPlayer();
+        scores[player] = (scores[player] || 0) + totalCorrect * 100;
+        localStorage.setItem("mathGameAllScores", JSON.stringify(scores));
+
+      } else if (mode === "practice") {
+        document.getElementById("results-grade").textContent    = pct + "%";
+        document.getElementById("results-fraction").textContent = totalCorrect + " / " + total + " correct";
+        document.getElementById("results-pct").textContent      = "practice complete";
+        document.getElementById("results-msg").textContent      = "";
+
+      } else {
+        document.getElementById("results-grade").textContent    = getTotalScore().toLocaleString();
+        document.getElementById("results-fraction").textContent = totalCorrect + " / " + total + " correct";
+        document.getElementById("results-pct").textContent      = pct + "% accuracy";
+        document.getElementById("results-msg").textContent      = cfg.label + " complete";
+      }
+
+      document.getElementById("test-results").style.display = "flex";
+    }
+
+    // ── Timer ─────────────────────────────────────────────────────────────────
 
     function startCountdown() {
       timeLeft = TIME_LIMIT;
@@ -291,12 +487,16 @@
       timerInterval = setInterval(function() {
         timeLeft -= 0.1;
         if (timeLeft <= 0) {
-          timeLeft = 0; updateTimerBar();
+          timeLeft = 0;
+          updateTimerBar();
           if (!answered) {
-            answered = true; stopCountdown();
-            showFeedback({ correct: false, pointsEarned: 0, timeTaken: TIME_LIMIT, totalScore: getTotalScore() });
+            answered = true;
+            stopCountdown();
+            handleAnswerResult(gradeAnswer(""));
           }
-        } else { updateTimerBar(); }
+        } else {
+          updateTimerBar();
+        }
       }, 100);
     }
 
@@ -306,34 +506,19 @@
       var pct = (timeLeft / TIME_LIMIT) * 100;
       var bar = document.getElementById("timer-bar");
       bar.style.width = pct + "%";
-      if (pct > 50) { bar.style.background = "linear-gradient(90deg, #00e676, #ffe566)"; }
-      else if (pct > 20) { bar.style.background = "linear-gradient(90deg, #ffe566, #ff9800)"; }
-      else { bar.style.background = "linear-gradient(90deg, #ff5252, #d32f2f)"; }
+      bar.style.background = pct > 20 ? "var(--accent)" : "var(--text-tertiary)";
     }
 
-    function showFeedback(result) {
-      updateScoreDisplay();
-      var overlay = document.getElementById("feedback");
-      var box = document.getElementById("feedback-box");
-      document.getElementById("feedback-icon").textContent   = result.correct ? String.fromCodePoint(127881) : String.fromCodePoint(128556);
-      document.getElementById("feedback-label").textContent  = result.correct ? "Correct!" : "Not quite!";
-      document.getElementById("feedback-points").textContent = result.correct
-        ? "+" + result.pointsEarned + " points  (" + result.timeTaken + "s)"
-        : "The answer was: " + currentQuestion.answer;
-      document.getElementById("feedback-total").textContent  = "Total score: " + result.totalScore;
-      box.className = result.correct ? "feedback-correct" : "feedback-wrong";
-      overlay.style.display = "flex";
-      setTimeout(function() { overlay.style.display = "none"; loadNextQuestion(); }, 2000);
-    }
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     function updateScoreDisplay() {
-      document.getElementById("score-number").textContent = getTotalScore();
+      document.getElementById("score-number").textContent = getTotalScore().toLocaleString();
     }
 
     function shuffleArray(arr) {
       for (var i = arr.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
-        var temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+        var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
       }
     }
 
