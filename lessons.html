@@ -403,7 +403,7 @@
           <div class="topic-icon" style="font-size:0.72rem; letter-spacing:0;">cm</div>
           <div>
             <div class="topic-title">Measurement</div>
-            <div class="topic-sub">Perimeter, area, and using a ruler</div>
+            <div class="topic-sub">Length, perimeter, area, mass, and capacity</div>
           </div>
         </div>
         <div class="chevron" aria-hidden="true">
@@ -441,6 +441,42 @@
             <div class="q">A square has sides of 5 cm. What is its perimeter?</div>
             <div class="steps">5 × 4 = 20</div>
             <div class="answer">Answer: 20 cm</div>
+          </div>
+        </div>
+        <h3>Mass (weight)</h3>
+        <div class="rule">
+          1 kg = 1000 g<br><br>
+          To convert kg → g: multiply by 1000<br>
+          Example: 3 kg = 3 × 1000 = <strong>3000 g</strong>
+        </div>
+
+        <h3>Capacity (liquid volume)</h3>
+        <div class="rule">
+          1 L = 1000 mL<br><br>
+          To convert L → mL: multiply by 1000<br>
+          Example: 2 L = 2 × 1000 = <strong>2000 mL</strong>
+        </div>
+
+        <div class="examples">
+          <div class="example">
+            <div class="q">A rectangle is 8 cm long and 3 cm wide. What is the perimeter?</div>
+            <div class="steps">8 + 3 + 8 + 3 = 22 cm  (or 2 × (8 + 3) = 22)</div>
+            <div class="answer">Answer: 22 cm</div>
+          </div>
+          <div class="example">
+            <div class="q">A rectangle is 6 cm long and 4 cm wide. What is its area?</div>
+            <div class="steps">Area = 6 × 4 = 24</div>
+            <div class="answer">Answer: 24 cm²</div>
+          </div>
+          <div class="example">
+            <div class="q">How many grams are in 5 kg?</div>
+            <div class="steps">5 × 1000 = 5000</div>
+            <div class="answer">Answer: 5000 g</div>
+          </div>
+          <div class="example">
+            <div class="q">A bottle has 1000 mL. You pour out 250 mL. How much is left?</div>
+            <div class="steps">1000 − 250 = 750</div>
+            <div class="answer">Answer: 750 mL</div>
           </div>
         </div>
         <button class="practice-btn" onclick="practice()">Practice Measurement</button>
@@ -542,6 +578,136 @@
           </div>
         </div>
         <button class="practice-btn" onclick="practice()">Practice Equals Sign</button>
+      </div>
+    </div>
+
+    <!-- ── PATTERNS ── -->
+    <div class="topic" id="t-patterns">
+      <div class="topic-header" onclick="toggle('t-patterns')">
+        <div class="topic-header-left">
+          <div class="topic-icon" style="font-size:0.72rem; letter-spacing:0;">→</div>
+          <div>
+            <div class="topic-title">Patterns</div>
+            <div class="topic-sub">Finding the rule, extending sequences</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>What is a pattern?</h3>
+        <p>A <strong>number pattern</strong> is a sequence of numbers that follow a rule. The rule tells you how to get from one number to the next.</p>
+
+        <h3>Finding the rule</h3>
+        <div class="rule">
+          Step 1: Subtract each number from the one after it.<br>
+          Step 2: If the difference is the same each time, that's your rule.<br><br>
+          Example: 3, 6, 9, 12, ...<br>
+          6 − 3 = 3, 9 − 6 = 3, 12 − 9 = 3<br>
+          Rule: <strong>+ 3 each time</strong>
+        </div>
+
+        <h3>Counting down</h3>
+        <div class="rule">
+          The rule can also subtract each time.<br>
+          Example: 40, 35, 30, 25, ...<br>
+          Rule: <strong>− 5 each time</strong> — next term = 20
+        </div>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">What comes next: 5, 10, 15, 20, ___?</div>
+            <div class="steps">Difference = +5 each time.</div>
+            <div class="answer">Answer: 25</div>
+          </div>
+          <div class="example">
+            <div class="q">Fill in the missing number: 8, 12, ___, 20, 24</div>
+            <div class="steps">Difference = +4. The missing term is 12 + 4 = 16.</div>
+            <div class="answer">Answer: 16</div>
+          </div>
+          <div class="example">
+            <div class="q">What comes next: 50, 45, 40, 35, ___?</div>
+            <div class="steps">Difference = −5 each time. 35 − 5 = 30.</div>
+            <div class="answer">Answer: 30</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Patterns</button>
+      </div>
+    </div>
+
+    <!-- ── DATA ── -->
+    <div class="topic" id="t-data">
+      <div class="topic-header" onclick="toggle('t-data')">
+        <div class="topic-header-left">
+          <div class="topic-icon" style="font-size:0.72rem; letter-spacing:0;">&#x2261;</div>
+          <div>
+            <div class="topic-title">Data</div>
+            <div class="topic-sub">Bar graphs, mode, mean, and median</div>
+          </div>
+        </div>
+        <div class="chevron" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3L9 7L5 11"/>
+          </svg>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <h3>Reading bar graphs</h3>
+        <p>A <strong>bar graph</strong> uses bars to show quantities. Read the height of each bar against the number scale to find the value.</p>
+        <div class="rule">
+          To find the most popular / most votes: look for the <strong>tallest bar</strong> (highest number).
+        </div>
+
+        <h3>Mode</h3>
+        <div class="rule">
+          The <strong>mode</strong> is the number that appears <strong>most often</strong> in a data set.<br><br>
+          Example: 3, 5, 3, 7, 3, 5<br>
+          3 appears 3 times — Mode = <strong>3</strong>
+        </div>
+
+        <h3>Mean (average)</h3>
+        <div class="rule">
+          <strong>Step 1:</strong> Add all the numbers together.<br>
+          <strong>Step 2:</strong> Divide by how many numbers there are.<br><br>
+          Example: 4, 6, 8, 10<br>
+          Sum = 28 — Divide by 4 — Mean = <strong>7</strong>
+        </div>
+
+        <h3>Median</h3>
+        <div class="rule">
+          The <strong>median</strong> is the <strong>middle number</strong> when the data is in order.<br><br>
+          Example: 2, 5, 8, 11, 14<br>
+          Middle number = <strong>8</strong>
+        </div>
+
+        <h3>Worked examples</h3>
+        <div class="examples">
+          <div class="example">
+            <div class="q">Bar graph: Red = 8, Blue = 5, Green = 12, Yellow = 3. Which has the most?</div>
+            <div class="steps">Find the largest: 12 (Green).</div>
+            <div class="answer">Answer: Green</div>
+          </div>
+          <div class="example">
+            <div class="q">Find the mode of: 2, 4, 2, 6, 2, 4</div>
+            <div class="steps">2 appears 3 times, 4 appears 2 times, 6 appears 1 time.</div>
+            <div class="answer">Answer: 2</div>
+          </div>
+          <div class="example">
+            <div class="q">Find the mean of: 10, 20, 30, 40</div>
+            <div class="steps">Sum = 100 — Divide by 4 = 25</div>
+            <div class="answer">Answer: 25</div>
+          </div>
+          <div class="example">
+            <div class="q">Find the median of: 7, 3, 9, 1, 5</div>
+            <div class="steps">Put in order: 1, 3, 5, 7, 9 — middle = 5</div>
+            <div class="answer">Answer: 5</div>
+          </div>
+        </div>
+        <button class="practice-btn" onclick="practice()">Practice Data</button>
       </div>
     </div>
 
