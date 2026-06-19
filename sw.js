@@ -1,7 +1,7 @@
-var CACHE = 'math-quest-v5';
+var CACHE = 'math-quest-v6';
 var FILES = [
-  './home.html',
   './index.html',
+  './menu.html',
   './lessons.html',
   './game.html',
   './leaderboard.html',
