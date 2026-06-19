@@ -32,6 +32,14 @@
     }
     #back-btn:hover { border-color: var(--blue); color: var(--blue); }
     h1 { font-size: 1.6rem; font-weight: 900; color: var(--text); letter-spacing: -1px; }
+    #reset-btn {
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-quaternary); font-family: inherit;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      padding: 7px 14px; cursor: pointer; width: 80px;
+      transition: border-color 0.12s, color 0.12s;
+    }
+    #reset-btn:hover { border-color: #c0392b; color: #c0392b; }
     .card {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 600px;
@@ -71,7 +79,7 @@
   <div id="header">
     <a id="back-btn" href="home.html">Home</a>
     <h1>Leaderboard</h1>
-    <div style="width:80px"></div>
+    <button id="reset-btn" onclick="resetBoard()">Reset</button>
   </div>
 
   <div class="card" id="board"></div>
@@ -127,6 +135,13 @@
         row.appendChild(scoreEl);
         board.appendChild(row);
       });
+    }
+
+    function resetBoard() {
+      if (confirm("Clear all scores? This can't be undone.")) {
+        localStorage.removeItem("mathGameAllScores");
+        render();
+      }
     }
 
     render();
