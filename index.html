@@ -178,7 +178,7 @@
     <div class="modes" id="modes">
 
       <!-- Classic -->
-      <div class="mode-card" onclick="selectMode('classic', this)">
+      <div class="mode-card" data-mode="classic" onclick="selectMode('classic', this)">
         <div class="mode-icon" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
             <path d="M9.5 1.5L3.5 9H7.5L6 14.5L12.5 7H8.5L9.5 1.5Z"/>
@@ -196,7 +196,7 @@
       </div>
 
       <!-- Accuracy -->
-      <div class="mode-card" onclick="selectMode('accuracy', this)">
+      <div class="mode-card" data-mode="accuracy" onclick="selectMode('accuracy', this)">
         <div class="mode-icon" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="8" cy="8" r="6.5"/>
@@ -216,7 +216,7 @@
       </div>
 
       <!-- Test -->
-      <div class="mode-card" onclick="selectMode('test', this)">
+      <div class="mode-card" data-mode="test" onclick="selectMode('test', this)">
         <div class="mode-icon" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
             <rect x="2.5" y="2" width="11" height="12" rx="2"/>
@@ -234,7 +234,7 @@
       </div>
 
       <!-- Practice -->
-      <div class="mode-card" onclick="selectMode('practice', this)">
+      <div class="mode-card" data-mode="practice" onclick="selectMode('practice', this)">
         <div class="mode-icon" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M8 13.5V4" stroke-linecap="round"/>
@@ -254,7 +254,7 @@
       </div>
 
       <!-- Hard Mode: spans full width -->
-      <div class="mode-card" onclick="selectMode('hard', this)">
+      <div class="mode-card" data-mode="hard" onclick="selectMode('hard', this)">
         <div class="mode-icon" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M8 14C5.5 14 4 11.5 4 9C4 6.5 7 4 7 2C7.5 3.5 8.5 5 8.5 6.5C9 5 10 3.5 10 2.5C12 4.5 12 7 12 9C12 11.5 10.5 14 8 14Z" stroke-linecap="round" stroke-linejoin="round"/>
@@ -294,9 +294,15 @@
   <script>
     var selectedMode = null;
 
-    // Pre-fill name from last session
+    // Pre-fill name and last-used mode from previous session
     var saved = localStorage.getItem("mathGameCurrentPlayer");
     if (saved) document.getElementById("username").value = saved;
+
+    var savedMode = localStorage.getItem("mathGameMode");
+    if (savedMode && saved) {
+      var savedCard = document.querySelector('[data-mode="' + savedMode + '"]');
+      if (savedCard) selectMode(savedMode, savedCard);
+    }
 
     function selectMode(mode, card) {
       var name = document.getElementById("username").value.trim();
