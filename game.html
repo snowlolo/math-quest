@@ -348,9 +348,16 @@
 
     // ── Grading ───────────────────────────────────────────────────────────────
 
+    function normalizeAnswer(s) {
+      return String(s).trim().toLowerCase()
+        .replace(/\s+/g, '')
+        .replace(/cm2/g, 'cm²').replace(/cm3/g, 'cm³')
+        .replace(/m2/g,  'm²' ).replace(/m3/g,  'm³');
+    }
+
     function gradeAnswer(playerAnswer) {
       var timeTaken = (Date.now() - questionStartTime) / 1000;
-      var correct   = String(playerAnswer).trim().toLowerCase() === String(currentQuestion.answer).trim().toLowerCase();
+      var correct   = normalizeAnswer(playerAnswer) === normalizeAnswer(currentQuestion.answer);
       var pts       = 0;
 
       if (mode === "classic" || mode === "hard") {
